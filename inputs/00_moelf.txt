@@ -1,0 +1,1 @@
+this is a test input as 0th day doesn't exist, human counts from 1.

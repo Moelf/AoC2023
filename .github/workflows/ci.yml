@@ -1,0 +1,34 @@
+name: CI
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    tags: '*'
+jobs:
+  test:
+    name: ${{ matrix.os }} - ${{ matrix.arch }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    continue-on-error: false
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        arch: [x64]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v1
+        with:
+          version: 1.9
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/cache@v1
+      - name: Setup Cpp
+        uses: bazelbuild/setup-bazelisk@v2
+      - name: Mount bazel cache
+        uses: actions/cache@v3
+        with:
+          path: "~/.cache/bazel"
+          key: bazel
