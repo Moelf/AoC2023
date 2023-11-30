@@ -18,7 +18,7 @@ jobs:
         os: [ubuntu-latest]
         arch: [x64]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Setup Julia
         uses: julia-actions/setup-julia@v1
         with:
@@ -32,3 +32,5 @@ jobs:
         with:
           path: "~/.cache/bazel"
           key: bazel
+      - name: Run tests
+        run: julia --color=yes ./runtests.jl
