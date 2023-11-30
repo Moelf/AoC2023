@@ -40,10 +40,12 @@ function get_all_inputs_solutions(day_num_str)
 end
 
 
-for day_num in 0:0
+
+for day_num in 0:25
     day_num_str = lpad(day_num, 2, '0')
+    inputs_solutions = get_all_inputs_solutions(day_num_str)
+    isempty(inputs_solutions) && continue
     @testset verbose=true "Day $day_num_str" begin
-        inputs_solutions = get_all_inputs_solutions(day_num_str)
         for lang in ALL_LANGUAGES, (input_path, reference_output) in inputs_solutions
             our_output = run_solution(day_num_str, input_path, Val(Symbol(lang)))
             reference_output
