@@ -30,17 +30,6 @@ LUT = [
         "nine",
         ]
 
-
-def find_min(line, tofind, num, min_pos):
-    pos = line.find(tofind)
-    if pos != -1 and pos < min_pos:
-        return pos, num
-
-def find_max(line, tofind, num, max_pos):
-    pos = line.find(tofind)
-    if pos != -1 and pos > max_pos:
-        return pos, num
-
 def find_code(line):
     """
     return the code for each line
@@ -81,15 +70,4 @@ def sol2():
         print(sum)
 
 sol1()
-for i in """
-two1nine
-eightwothree
-abcone2threexyz
-xtwone3four
-4nineeightseven2
-zoneight234
-7pqrstsixteen
-""".splitlines():
-    #  print(find_code(i))
-    pass
 sol2()
