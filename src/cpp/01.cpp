@@ -72,9 +72,10 @@ auto strtonum_part2(std::string str)
     return result;
 }
 
-int main()
+int main(int argc,  char **argv)
 {
-    std::ifstream file("inputs/01_bauerc.txt");
+    std::string inFile(argv[1]);
+    std::ifstream file(inFile);
     std::string str;
     auto result_part1 = 0;
     auto result_part2 = 0;
@@ -84,7 +85,7 @@ int main()
         result_part1 += strtonum_part1(str);
         result_part2 += strtonum_part2(str);
     }
-    std::cout << "Answer: " << result_part1 << std::endl;
-    std::cout << "Answer: " << result_part2 << std::endl;
+    std::cout << result_part1 << std::endl;
+    std::cout << result_part2 << std::endl;
     return 0;
 }
