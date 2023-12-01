@@ -17,7 +17,7 @@ function run_solution() end
 
 function run_solution(source_path, input_path, ::Val{:python})
     !isfile(source_path) && return nothing
-    return readlines(`./$source_path $input_path`)
+    return readlines(`python3 ./$source_path $input_path`)
 end
 
 function run_solution(source_path, input_path, ::Val{:cpp})
