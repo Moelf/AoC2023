@@ -1,10 +1,9 @@
-# AoC2023
-Advent of Code 2023
+Advent of Code 2023: https://adventofcode.com/2023
 
 ## Repo structure
 ```bash
-> tree
-.
+AoC2023/
+├── runtests.jl
 ├── inputs
 │   └── 00_moelf.txt
 ├── solutions
