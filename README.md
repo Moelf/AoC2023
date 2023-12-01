@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/JuliaHEP/UnROOT.jl/workflows/CI/badge.svg)](https://github.com/JuliaHEP/UnROOT.jl/actions)
+[![Build Status](https://github.com/Moelf/AoC2023/workflows/CI/badge.svg)](https://github.com/Moelf/AoC2023/actions)
 
 Advent of Code 2023: https://adventofcode.com/2023
 
