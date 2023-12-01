@@ -53,7 +53,8 @@ for day_num in 0:25
             our_output = run_solution(day_num_str, input_path, Val(Symbol(lang)))
             isnothing(our_output) && continue
             for (i, (our, ref)) in enumerate(zip(our_output, reference_output))
-                @testset "$lang $input_path Part $i" begin
+                input_filename = last(splitpath(input_path))
+                @testset "$(rpad(lang, 7, ' ')) $input_filename Part $i" begin
                     @test our == ref
                 end
             end
