@@ -15,6 +15,11 @@ For `Val{:cpp}`, you probably want to use `readlines(`cmd`)` to read the stdout 
 """
 function run_solution() end
 
+function run_solution(source_path, input_path, ::Val{:python})
+    !isfile(source_path) && return nothing
+    return readlines(`./$source_path $input_path`)
+end
+
 function run_solution(source_path, input_path, ::Val{:cpp})
     !isfile(source_path) && return nothing
     exename = replace(splitpath(source_path)[end], "cpp" => "o")
