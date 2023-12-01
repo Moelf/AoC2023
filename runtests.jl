@@ -16,12 +16,15 @@ For `Val{:cpp}`, you probably want to use `readlines(`cmd`)` to read the stdout 
 function run_solution() end
 
 function run_solution(day_num_str, input_path, ::Val{:cpp})
-    run(`g++ -std=c++17 ./src/cpp/$day_num_str.cpp -o $day_num_str.o`)
+    source_path = joinpath(@__DIR__, "src/cpp/$day_num_str.cpp")
+    !isfile(source_path) && return nothing
+    run(`g++ -std=c++20 $source_path -o $day_num_str.o`)
     return readlines(`./$day_num_str.o $input_path`)
 end
 
 function run_solution(day_num_str, input_path, ::Val{:julia})
-    return readlines(`julia src/julia/$day_num_str.jl $input_path`)
+    source_path = joinpath(@__DIR__, "src/julia/$day_num_str.jl")
+    return readlines(`julia $source_path $input_path`)
 end
 
 function get_all_inputs_solutions(day_num_str)
@@ -45,14 +48,14 @@ for day_num in 0:25
     day_num_str = lpad(day_num, 2, '0')
     inputs_solutions = get_all_inputs_solutions(day_num_str)
     isempty(inputs_solutions) && continue
-    @testset verbose=true "Day $day_num_str" begin
+    @testset verbose = true "Day $day_num_str" begin
         for lang in ALL_LANGUAGES, (input_path, reference_output) in inputs_solutions
             our_output = run_solution(day_num_str, input_path, Val(Symbol(lang)))
-            reference_output
+            isnothing(our_output) && continue
             for (i, (our, ref)) in enumerate(zip(our_output, reference_output))
-            @testset "$lang $input_path Part $i" begin
-                @test our == ref
-            end
+                @testset "$lang $input_path Part $i" begin
+                    @test our == ref
+                end
             end
         end
     end
