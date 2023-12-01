@@ -15,10 +15,6 @@ For `Val{:cpp}`, you probably want to use `readlines(`cmd`)` to read the stdout 
 """
 function run_solution() end
 
-function run_solution(source_path, input_path, ::Val{:python})
-    !isfile(source_path) && return nothing
-    return readlines(`python3 ./$source_path $input_path`)
-end
 
 function run_solution(source_path, input_path, ::Val{:cpp})
     !isfile(source_path) && return nothing
@@ -30,6 +26,11 @@ end
 function run_solution(source_path, input_path, ::Val{:julia})
     !isfile(source_path) && return nothing
     return readlines(`julia $source_path $input_path`)
+end
+
+function run_solution(source_path, input_path, ::Val{:python})
+    !isfile(source_path) && return nothing
+    return readlines(`python3 ./$source_path $input_path`)
 end
 
 function get_all_inputs_solutions(day_num_str)
