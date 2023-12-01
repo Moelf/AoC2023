@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/JuliaHEP/UnROOT.jl/workflows/CI/badge.svg)](https://github.com/JuliaHEP/UnROOT.jl/actions)
+
 Advent of Code 2023: https://adventofcode.com/2023
 
 ## Repo structure
