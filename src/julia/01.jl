@@ -58,7 +58,7 @@ function getnumber_part2(line)
 		end
 		num_last = num
 	end
-    return parse(Int, string(num_first, num_last))
+    return num_first * 10 + num_last
 end
 
 # function test_getnumber_part2()
