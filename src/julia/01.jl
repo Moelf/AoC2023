@@ -1,7 +1,5 @@
 const INPUT_PATH = ARGS[1]
 
-using Test
-
 # Part I
 function getnumber(line)
     i = findfirst(isdigit, line)
@@ -28,22 +26,13 @@ function get_num_from_string(str)
 end
 
 function getnumber_part2(line)
+    # overlap=true is important
+    # getnumber_part2("6vzpjhtwonemc") == 61
     captures = collect(eachmatch(RE, line; overlap=true))
     num_first = get_num_from_string(captures[begin].match)
     num_last = get_num_from_string(captures[end].match)
     return num_first * 10 + num_last
 end
-
-# @testset "getnumber_part2" begin
-#     @test getnumber_part2("two1nine") == 29
-#     @test getnumber_part2("6vzpjhtwonemc") == 61
-#     @test getnumber_part2("eightwothree") == 83
-#     @test getnumber_part2("abcone2threexyz") == 13
-#     @test getnumber_part2("xtwone3four") == 24
-#     @test getnumber_part2("4nineeightseven2") == 42
-#     @test getnumber_part2("zoneight234") == 14
-#     @test getnumber_part2("7pqrstsixteen") == 76
-# end
 
 function part2()
     lines = readlines(INPUT_PATH)
