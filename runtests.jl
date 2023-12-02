@@ -1,6 +1,6 @@
 using Test
 
-const ALL_LANGUAGES = readdir("src")
+const ALL_LANGUAGES = isempty(ARGS) ? readdir("src") : ARGS
 const INPUTS = readdir("./inputs")
 
 """
@@ -17,19 +17,16 @@ function run_solution() end
 
 
 function run_solution(source_path, input_path, ::Val{:cpp})
-    !isfile(source_path) && return nothing
     exename = replace(splitpath(source_path)[end], "cpp" => "o")
     run(`g++ -std=c++20 $source_path -o $exename`)
     return readlines(`./$exename $input_path`)
 end
 
 function run_solution(source_path, input_path, ::Val{:julia})
-    !isfile(source_path) && return nothing
     return readlines(`julia $source_path $input_path`)
 end
 
 function run_solution(source_path, input_path, ::Val{:python})
-    !isfile(source_path) && return nothing
     return readlines(`python3 $source_path $input_path`)
 end
 
@@ -58,8 +55,9 @@ function test_lang(day_num_str, input_path, reference_output, lang)
     for source in all_sources
         source_string = rpad(source, 20, " ")
         @testset "$(rpad(lang, 7, ' ')) $source_string $input_string" begin
-            our_output = run_solution(joinpath(LANG_DIR, source), input_path, Val(Symbol(lang)))
-            isnothing(our_output) && return
+            source_path = joinpath(LANG_DIR, source)
+            isfile(source_path) || return
+            our_output = run_solution(source_path, input_path, Val(Symbol(lang)))
             for (our, ref) in zip(our_output, reference_output)
                 @test our == ref
             end

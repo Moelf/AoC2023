@@ -26,6 +26,28 @@ AoC2023/
 - the input files should be named as `<day>_<name>.txt`, the content should be the input of the day without any dangling empty lines at the end
 - the solutions files should be named exactly as corresponding input file, the content should be exactly one or two lines (depending on if you solved both parts)
 - the `src/<lang>/<day>_<optional name>.<ext>` should matched the double-digit day number convention. The `<lang>` should match what appears in [`runtests.jl`](https://github.com/Moelf/AoC2023/blob/main/runtests.jl#L18-L28)
+- - -
+
+To run tests, simply execute `julia runtests.jl`:
+```
+> julia runtests.jl
+Test Summary:                              | Pass  Total  Time
+Day 00                                     |    6      6  0.7s
+  cpp     00.cpp               00_test.txt |    2      2  0.3s
+  julia   00_test.jl           00_test.txt |    2      2  0.4s
+  python  00.py                00_test.txt |    2      2  0.0s
+```
+
+
+You can also specify list of the languages you want
+  to run - `julia runtests.jl python cpp`
+```
+> julia runtests.jl python cpp
+Test Summary:                              | Pass  Total  Time
+Day 00                                     |    4      4  0.3s
+  python  00.py                00_test.txt |    2      2  0.0s
+  cpp     00.cpp               00_test.txt |    2      2  0.3s
+```
 
 ## How to contribute
 - upload input and solutions in the same PR. Name and clean up them properly
