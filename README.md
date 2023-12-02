@@ -39,14 +39,14 @@ Day 00                                     |    6      6  0.7s
 ```
 
 
-You can also specify list if languages you want
-  to run - `julia runtests.jl julia python`
+You can also specify list of the languages you want
+  to run - `julia runtests.jl python cpp`
 ```
-> julia runtests.jl julia python
+> julia runtests.jl python cpp
 Test Summary:                              | Pass  Total  Time
-Day 00                                     |    4      4  0.5s
-  julia   00_test.jl           00_test.txt |    2      2  0.4s
+Day 00                                     |    4      4  0.3s
   python  00.py                00_test.txt |    2      2  0.0s
+  cpp     00.cpp               00_test.txt |    2      2  0.3s
 ```
 
 ## How to contribute
