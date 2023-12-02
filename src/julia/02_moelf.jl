@@ -20,9 +20,7 @@ function part1_pred(line)
     dict["blue"] <= 14
 end
 
-p1 = sum(enumerate(ALL_LINES)) do (i, line)
-    return part1_pred(line) ? i : 0
-end
+p1 = sum(findall(part1_pred, ALL_LINES))
 println(p1)
 
 # Part II
