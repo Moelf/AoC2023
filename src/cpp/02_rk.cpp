@@ -9,9 +9,8 @@
 int main(int argc,  char **argv) {
   std::ifstream file(argv[1]);
 
-  auto tf = [](auto v) {
-    std::string_view s (v.data(), v.data() + v.size());
-    return s;
+  auto tf = [](auto &&rng) {
+    return std::string_view (&*rng.begin(), std::ranges::distance(rng));
   };
   auto get_color = [](auto color, auto color_match, auto& R) {
     auto pos = color.find(color_match);
