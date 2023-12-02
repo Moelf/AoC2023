@@ -24,7 +24,6 @@ jobs:
         with:
           version: 1.9
           arch: ${{ matrix.arch }}
-      - uses: julia-actions/cache@v1
       - name: Setup Cpp
         uses: bazelbuild/setup-bazelisk@v2
       - name: Mount bazel cache
