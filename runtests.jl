@@ -18,7 +18,9 @@ function run_solution() end
 
 function run_solution(source_path, input_path, ::Val{:cpp})
     exename = replace(splitpath(source_path)[end], "cpp" => "o")
-    run(`g++ -std=c++20 $source_path -o $exename`)
+    if !isfile(exename) # FIXME use a proper build system
+        run(`g++ -std=c++20 $source_path -o $exename`)
+    end
     return readlines(`./$exename $input_path`)
 end
 
