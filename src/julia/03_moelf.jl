@@ -1,10 +1,3 @@
-const INPUT_PATH = ARGS[1]
-const ALL_LINES = readlines(INPUT_PATH)
-
-issymbol(c) = !isdigit(c) && c != '.'
-
-const SCHEMATICS = mapreduce(permutedims ∘ collect, vcat, ALL_LINES)::Matrix{Char}
-
 const ADJACENTS = [CartesianIndex(x, y) for x = -1:1, y = -1:1]
 
 function grow!(schematics, start, direction, pusher!; digits, seen)
@@ -18,7 +11,6 @@ function grow!(schematics, start, direction, pusher!; digits, seen)
     end
 end
 
-
 function grow_digits(schematics, start; seen)
     push!(seen, start)
     digits = [schematics[start]]
@@ -27,11 +19,11 @@ function grow_digits(schematics, start; seen)
     return digits
 end
 
-function seek_and_accumulate(schematics, seeds; reducer)
+function seek_and_accumulate(schematics; seeder, reducer)
     s = 0
     seen = Set{CartesianIndex{2}}()
     nums = Int[]
-    for start in seeds
+    for start in findall(seeder, schematics)
         for offset in ADJACENTS
             surround = start + offset
             # look around to find a digit to start growing
@@ -49,13 +41,14 @@ function seek_and_accumulate(schematics, seeds; reducer)
     return s
 end
 
+const SCHEMATICS = stack(readlines(ARGS[1]); dims=1)
+
 # Part 1
-const SYMBOLS = findall(issymbol, SCHEMATICS)
-p1 = seek_and_accumulate(SCHEMATICS, SYMBOLS; reducer = sum)
+issymbol(c) = !isdigit(c) && c != '.'
+p1 = seek_and_accumulate(SCHEMATICS; seeder = issymbol, reducer = sum)
 println(p1)
 
 # Part 2
-const GEARS = findall(==('*'), SCHEMATICS)
 p2_reducer(nums) = length(nums) == 2 ? prod(nums) : 0
-p2 = seek_and_accumulate(SCHEMATICS, GEARS; reducer = p2_reducer)
+p2 = seek_and_accumulate(SCHEMATICS; seeder = ==('*'), reducer = p2_reducer)
 println(p2)
