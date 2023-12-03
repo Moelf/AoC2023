@@ -17,10 +17,7 @@ function run_solution() end
 
 
 function run_solution(source_path, input_path, ::Val{:cpp})
-    exename = replace(splitpath(source_path)[end], "cpp" => "o")
-    if !isfile(exename) # FIXME use a proper build system
-        run(`g++ -std=c++20 $source_path -o $exename`)
-    end
+    exename = joinpath("bazel-bin/src/cpp", replace(splitpath(source_path)[end], ".cpp"=>""))
     return readlines(`./$exename $input_path`)
 end
 
