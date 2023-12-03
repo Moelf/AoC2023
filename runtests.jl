@@ -17,7 +17,6 @@ function run_solution() end
 
 
 function run_solution(source_path, input_path, ::Val{:cpp})
-    run(`bazel build //...`) # FIXME Move this to somewhere so it's only called once.
     exename = joinpath("bazel-bin/src/cpp", (splitpath(source_path)[end][1:end-4]))
     return readlines(`./$exename $input_path`)
 end

@@ -24,8 +24,14 @@ jobs:
         with:
           version: 1.9
           arch: ${{ matrix.arch }}
-      - name: Setup Cpp
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
+      - name: Setup bazel
         uses: bazelbuild/setup-bazelisk@v2
+        run: bazel build //...
       - name: Mount bazel cache
         uses: actions/cache@v3
         with:
