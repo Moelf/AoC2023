@@ -17,7 +17,7 @@ function run_solution() end
 
 
 function run_solution(source_path, input_path, ::Val{:cpp})
-    exename = joinpath("bazel-bin/src/cpp", replace(splitpath(source_path)[end], "cpp"=>""))
+    exename = joinpath("bazel-bin/src/cpp", replace(splitpath(source_path)[end], ".cpp"=>""))
     return readlines(`./$exename $input_path`)
 end
 
