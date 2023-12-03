@@ -13,7 +13,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     continue-on-error: false
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest]
         arch: [x64]
@@ -24,11 +23,6 @@ jobs:
         with:
           version: 1.9
           arch: ${{ matrix.arch }}
-      - name: Set up GCC
-        uses: egor-tensin/setup-gcc@v1
-        with:
-          version: 10
-          platform: x64
       - name: Setup bazel
         uses: bazelbuild/setup-bazelisk@v2
       - name: Mount bazel cache
