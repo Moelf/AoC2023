@@ -31,11 +31,12 @@ jobs:
           platform: x64
       - name: Setup bazel
         uses: bazelbuild/setup-bazelisk@v2
-        run: bazel build //...
       - name: Mount bazel cache
         uses: actions/cache@v3
         with:
           path: "~/.cache/bazel"
           key: bazel
+      - name: Build cpp
+        run: bazel build //...
       - name: Run tests
         run: julia --color=yes ./runtests.jl
