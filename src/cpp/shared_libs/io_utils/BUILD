@@ -7,5 +7,8 @@ cc_library (
         "src/io_utils.cpp",
     ],
     includes = ["include"],
-    visibility = ["//visibility:public"]
+    visibility = ["//visibility:public"],
+    copts = [
+        "-lstdc++fs"
+    ]
 )

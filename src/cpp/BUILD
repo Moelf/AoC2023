@@ -16,7 +16,6 @@ cc_binary(
         "//src/cpp/shared_libs/io_utils:io_utils"
     ],
     copts = [
-        "-std=c++17",
         "-lstdc++fs"
     ]
 )
@@ -24,7 +23,15 @@ cc_binary(
 cc_binary(
     name = "02_rk",
     srcs = ["02_rk.cpp"],
+)
+
+cc_binary(
+    name = "02_ylks",
+    srcs = ["02_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ],
     copts = [
-        "-std=c++20",
+        "-lstdc++fs"
     ]
 )
