@@ -1,1 +1,2 @@
 runtests.jl linguist-detectable=false
+src/cpp/third_parties/** linguist-detectable=false
