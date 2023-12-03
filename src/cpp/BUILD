@@ -20,3 +20,11 @@ cc_binary(
         "-lstdc++fs"
     ]
 )
+
+cc_binary(
+    name = "02_rk",
+    srcs = ["02_rk.cpp"],
+    copts = [
+        "-std=c++20",
+    ]
+)
