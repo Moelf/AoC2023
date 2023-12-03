@@ -2,10 +2,9 @@
 
 #include "io_utils.hpp"
 
-#include "CLI11.hpp"
-
-#include <filesystem>
 #include <cmath>
+#include <filesystem>
+#include <iostream>
 
 namespace {
 
@@ -83,10 +82,7 @@ int sumOfAlphanumericCalibrationNumber(const std::vector<std::string> & parsed_f
 
 int main(int argc, char** argv) {
     // Parse inputs
-    CLI::App parser("Run Day 1 of AoC", "01_ylks");
-    std::string filename;
-    parser.add_option("-i,--input", filename, "Input file");
-    CLI11_PARSE(parser, argc, argv);
+    std::string filename(argv[1]);
 
     const auto parsed_file = io_utils::parseInputFile(std::filesystem::path(filename));
 

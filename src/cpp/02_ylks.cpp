@@ -1,9 +1,9 @@
 
 #include "io_utils.hpp"
 
+#include <iostream>
 #include <numeric>
 #include <unordered_map>
-#include <iostream>
 #include <regex>
 
 namespace {
