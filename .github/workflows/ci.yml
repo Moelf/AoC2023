@@ -30,7 +30,5 @@ jobs:
         with:
           path: "~/.cache/bazel"
           key: bazel
-      - name: Build cpp
-        run: bazel build //...
       - name: Run tests
         run: julia --color=yes ./runtests.jl
