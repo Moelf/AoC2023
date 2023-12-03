@@ -7,27 +7,23 @@ const SCHEMATICS = mapreduce(permutedims ∘ collect, vcat, ALL_LINES)::Matrix{C
 
 const ADJACENTS = [CartesianIndex(x, y) for x = -1:1, y = -1:1]
 
+function grow!(schematics, start, direction, pusher!; digits, seen)
+    while true
+        start += direction
+        if !isassigned(schematics, start) || !isdigit(schematics[start])
+            break
+        end
+        push!(seen, start)
+        pusher!(digits, schematics[start])
+    end
+end
+
+
 function grow_digits(schematics, start; seen)
     push!(seen, start)
     digits = [schematics[start]]
-    left = right = start
-    while true
-        left -= CartesianIndex(0, 1)
-        if !isassigned(schematics, left) || !isdigit(schematics[left])
-            break
-        end
-        push!(seen, left)
-        pushfirst!(digits, schematics[left])
-    end
-
-    while true
-        right += CartesianIndex(0, 1)
-        if !isassigned(schematics, right) || !isdigit(schematics[right])
-            break
-        end
-        push!(seen, right)
-        push!(digits, schematics[right])
-    end
+    grow!(schematics, start, CartesianIndex(0, -1), pushfirst!; digits, seen)
+    grow!(schematics, start, CartesianIndex(0, 1), push!; digits, seen)
     return digits
 end
 
