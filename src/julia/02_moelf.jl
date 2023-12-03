@@ -15,9 +15,7 @@ end
 # Part I
 function part1_pred(line)
     dict = line_max(line)
-    return dict["red"] <= 12 &&
-    dict["green"] <= 13 &&
-    dict["blue"] <= 14
+    return dict["red"] <= 12 && dict["green"] <= 13 && dict["blue"] <= 14
 end
 
 p1 = sum(findall(part1_pred, ALL_LINES))
