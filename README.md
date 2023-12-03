@@ -5,7 +5,7 @@ Advent of Code 2023: https://adventofcode.com/2023
 ## How to contribute
 - upload input and solutions in the same PR. Name and clean up them properly
 - when adding a new programming language, remember to update `runtests.jl` to "teach" it how to compile & run the `<lang>`
-- 
+
 When testing locally, you can choose languages you want. For example, to avoid building C++ with bezel:
   to run - `julia runtests.jl python cpp`
 ```
