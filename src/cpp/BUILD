@@ -35,3 +35,14 @@ cc_binary(
         "-lstdc++fs"
     ]
 )
+
+cc_binary(
+    name = "03_ylks",
+    srcs = ["03_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ],
+    copts = [
+        "-lstdc++fs"
+    ]
+)
