@@ -46,3 +46,11 @@ cc_binary(
         "-lstdc++fs"
     ]
 )
+
+cc_binary(
+    name = "04_ylks",
+    srcs = ["04_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ]
+)
