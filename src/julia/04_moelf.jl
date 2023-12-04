@@ -8,11 +8,8 @@ prize(n) = iszero(n) ? 0 : 2^(n - 1)
 function scratch_all_count(cards)
     N_cards = ones(Int, length(cards))
     for (i, N_copies) in enumerate(N_cards)
-        score = cards[i]
-        for j = (i + 1):(i + score)
-            isassigned(N_cards, j) || continue
-            N_cards[j] += N_copies
-        end
+        rg = (i + 1):(i + cards[i])
+        N_cards[rg] .+= N_copies
     end
     return N_cards
 end
