@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 import sys
 import re
-"""
-"""
 
 def parse(infile):
     # (line, start, stop, number)
