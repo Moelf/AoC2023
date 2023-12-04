@@ -4,7 +4,7 @@ using Downloads
 Pkg.activate(@__DIR__)
 using AoC2023
 
-cookie = get(ENV, "AOC_COOKIE", "")
+const cookie = get(ENV, "AOC_COOKIE", "")
 const HEADERS = headers=Dict("Cookie" => "session=$cookie")
 
 const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
@@ -80,7 +80,7 @@ end
 for day_num in 0:25
     day_num_str = lpad(day_num, 2, '0')
     input_path = joinpath(@__DIR__, "inputs", "$(day_num_str)_moelf.txt")
-    if day_num > 0
+    if day_num > 0 && !isempty(cookie)
         try
             Downloads.download("https://adventofcode.com/2023/day/$day_num/input", input_path; headers)
         catch e
