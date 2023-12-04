@@ -5,6 +5,9 @@ Pkg.activate(@__DIR__)
 using AoC2023
 
 const cookie = get(ENV, "AOC_COOKIE", "")
+if get(ENV, "CI", "false") == true
+    isempty(cookie) && error("AOC_COOKIE environment variable must be set for CI")
+end
 const HEADERS = headers=Dict("Cookie" => "session=$cookie")
 
 const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
