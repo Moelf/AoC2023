@@ -1,4 +1,5 @@
 using Test
+using AoC2023
 
 const ALL_LANGUAGES = isempty(ARGS) ? readdir("src") : ARGS
 const INPUTS = readdir("./inputs")
@@ -22,7 +23,13 @@ function run_solution(source_path, input_path, ::Val{:cpp})
 end
 
 function run_solution(source_path, input_path, ::Val{:julia})
-    return readlines(`julia $source_path $input_path`)
+    original_stdout = stdout
+    rd, wr = redirect_stdout()
+    AoC2023.DAY_MODULES[source_path].main(input_path)
+    close(wr)
+    redirect_stdout(original_stdout)
+    result = readlines(rd)
+    return result
 end
 
 function run_solution(source_path, input_path, ::Val{:python})

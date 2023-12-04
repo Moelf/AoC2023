@@ -41,14 +41,17 @@ function seek_and_accumulate(schematics; seeder, reducer)
     return s
 end
 
-const SCHEMATICS = stack(readlines(ARGS[1]); dims=1)
 
 # Part 1
 issymbol(c) = !isdigit(c) && c != '.'
-p1 = seek_and_accumulate(SCHEMATICS; seeder = issymbol, reducer = sum)
-println(p1)
 
 # Part 2
 p2_reducer(nums) = length(nums) == 2 ? prod(nums) : 0
-p2 = seek_and_accumulate(SCHEMATICS; seeder = ==('*'), reducer = p2_reducer)
-println(p2)
+
+function main(path)
+    SCHEMATICS = stack(readlines(path); dims=1)
+    println(seek_and_accumulate(SCHEMATICS; seeder = issymbol, reducer = sum))
+    println(seek_and_accumulate(SCHEMATICS; seeder = ==('*'), reducer = p2_reducer))
+end
+
+(abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])

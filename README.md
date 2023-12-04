@@ -40,3 +40,16 @@ AoC2023/
 - the input files should be named as `<day>_<name>.txt`, the content should be the input of the day without any dangling empty lines at the end
 - the solutions files should be named exactly as corresponding input file, the content should be exactly one or two lines (depending on if you solved both parts)
 - the `src/<lang>/<day>_<optional name>.<ext>` should matched the double-digit day number convention. The `<lang>` should match what appears in [`runtests.jl`](https://github.com/Moelf/AoC2023/blob/main/runtests.jl#L18-L28)
+
+## Note for Julia
+Each `<day>_julia.jl` script should use a `main()` and `@__FILE__` pattern similar to:
+```julia
+function main(path)
+    println("hello world")
+    println("solution 2")
+end
+
+(abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])
+```
+
+this way we can put each script int a `DayN` module and compile only once per day.

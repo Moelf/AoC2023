@@ -1,5 +1,3 @@
-const INPUT_PATH = ARGS[1]
-
 # Part I
 function getnumber(line)
     i = findfirst(isdigit, line)
@@ -7,13 +5,10 @@ function getnumber(line)
     return parse(Int, string(line[i], line[j]))
 end
 
-function part1()
-    lines = readlines(INPUT_PATH)
-    println(sum(getnumber, lines))
-end
+part1(lines) = sum(getnumber, lines)
 
-part1() # Answer: 55123
 
+# Part II
 const lookup = Dict(
     "one" => 1,
     "two" => 2,
@@ -28,7 +23,6 @@ const lookup = Dict(
 
 const RE = Regex("$(join(keys(lookup), '|'))|\\d")
 
-# Part II
 function get_num_from_string(str)
     dig = tryparse(Int, str)
     !isnothing(dig) && return dig
@@ -44,9 +38,12 @@ function getnumber_part2(line)
     return num_first * 10 + num_last
 end
 
-function part2()
-    lines = readlines(INPUT_PATH)
-    println(sum(getnumber_part2, lines))
+part2(lines) = sum(getnumber_part2, lines)
+
+function main(path)
+    lines = readlines(path)
+    println(part1(lines))
+    println(part2(lines))
 end
 
-part2() # Answer: 55260
+(abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])
