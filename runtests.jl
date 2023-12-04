@@ -1,6 +1,4 @@
 using Test
-using Pkg
-Pkg.activate(@__DIR__)
 
 const ALL_LANGUAGES = isempty(ARGS) ? readdir("src") : ARGS
 const INPUTS = readdir("./inputs")
