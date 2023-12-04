@@ -1,5 +1,5 @@
 .vscode
 **/*.o
-**/*_moelf.txt
+inputs/*_moelf.txt
 **/Manifest.toml
 bazel-*
