@@ -31,4 +31,6 @@ jobs:
           path: "~/.cache/bazel"
           key: bazel
       - name: Run tests
+        env:
+          AOC_COOKIE: ${{ secrets.AOC_SESSION_COOKIE }}
         run: julia --color=yes ./runtests.jl

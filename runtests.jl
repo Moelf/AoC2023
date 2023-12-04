@@ -1,7 +1,11 @@
 using Test
 using Pkg
+using Downloads
 Pkg.activate(@__DIR__)
 using AoC2023
+
+cookie = get(ENV, "AOC_COOKIE", "")
+const HEADERS = headers=Dict("Cookie" => "session=$cookie")
 
 const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
 const INPUTS = readdir(joinpath(@__DIR__, "inputs"))
@@ -75,6 +79,14 @@ end
 
 for day_num in 0:25
     day_num_str = lpad(day_num, 2, '0')
+    input_path = joinpath(@__DIR__, "inputs", "$(day_num_str)_moelf.txt")
+    if day_num > 0
+        try
+            Downloads.download("https://adventofcode.com/2023/day/$day_num/input", input_path; headers)
+        catch e
+            break
+        end
+    end
     inputs_solutions = get_all_inputs_solutions(day_num_str)
     isempty(inputs_solutions) && continue
 
