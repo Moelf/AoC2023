@@ -1,4 +1,6 @@
 using Test
+using Pkg
+Pkg.activate(@__DIR__)
 using AoC2023
 
 const ALL_LANGUAGES = isempty(ARGS) ? readdir("src") : ARGS
