@@ -11,7 +11,6 @@ end
 const HEADERS = headers=Dict("Cookie" => "session=$cookie")
 
 const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
-const INPUTS = readdir(joinpath(@__DIR__, "inputs"))
 
 """
     run_solution(source_path, input_path, ::Val{T}) -> Vector{String}
@@ -46,7 +45,8 @@ function run_solution(source_path, input_path, ::Val{:python})
 end
 
 function get_all_inputs_solutions(day_num_str)
-    paths = filter(startswith(day_num_str), INPUTS)
+    input_paths = readdir(joinpath(@__DIR__, "inputs"))
+    paths = filter(startswith(day_num_str), input_paths)
     pairs = map(paths) do p
         input = joinpath("./inputs", p)
         solution = joinpath("./solutions", p)
