@@ -1,7 +1,10 @@
 using Test
+using Pkg
+Pkg.activate(@__DIR__)
+using AoC2023
 
-const ALL_LANGUAGES = isempty(ARGS) ? readdir("src") : ARGS
-const INPUTS = readdir("./inputs")
+const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
+const INPUTS = readdir(joinpath(@__DIR__, "inputs"))
 
 """
     run_solution(source_path, input_path, ::Val{T}) -> Vector{String}
@@ -22,7 +25,13 @@ function run_solution(source_path, input_path, ::Val{:cpp})
 end
 
 function run_solution(source_path, input_path, ::Val{:julia})
-    return readlines(`julia $source_path $input_path`)
+    original_stdout = stdout
+    rd, wr = redirect_stdout()
+    AoC2023.DAY_MODULES[source_path].main(input_path)
+    close(wr)
+    redirect_stdout(original_stdout)
+    result = readlines(rd)
+    return result
 end
 
 function run_solution(source_path, input_path, ::Val{:python})
