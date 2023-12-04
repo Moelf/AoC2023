@@ -50,10 +50,6 @@ function test_lang(day_num_str, input_path, reference_output, lang)
     all_sources = readdir(LANG_DIR)
     filter!(startswith(day_num_str), all_sources)
 
-    if (lang == "cpp")
-        run(`bazel build //...`)
-    end
-
     input_string = rpad(last(splitpath(input_path)), 10, " ")
     for source in all_sources
         source_string = rpad(source, 20, " ")
@@ -72,6 +68,13 @@ for day_num in 0:25
     day_num_str = lpad(day_num, 2, '0')
     inputs_solutions = get_all_inputs_solutions(day_num_str)
     isempty(inputs_solutions) && continue
+
+    if ("cpp" ∈ ALL_LANGUAGES)
+        cd(@__DIR__) do
+            run(`bazel build //...`)
+        end
+    end
+
     @testset verbose = true "Day $day_num_str" begin
         for lang in ALL_LANGUAGES, (input_path, reference_output) in inputs_solutions
             test_lang(day_num_str, input_path, reference_output, lang)
