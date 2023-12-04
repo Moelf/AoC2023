@@ -4,7 +4,7 @@ using Downloads
 Pkg.activate(@__DIR__)
 using AoC2023
 
-cookie = get(ENV, AOC_COOKIE, "")
+cookie = get(ENV, "AOC_COOKIE", "")
 const HEADERS = headers=Dict("Cookie" => "session=$cookie")
 
 const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
