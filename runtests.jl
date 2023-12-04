@@ -3,8 +3,8 @@ using Pkg
 Pkg.activate(@__DIR__)
 using AoC2023
 
-const ALL_LANGUAGES = isempty(ARGS) ? readdir("src") : ARGS
-const INPUTS = readdir("./inputs")
+const ALL_LANGUAGES = isempty(ARGS) ? ["julia","cpp","python"] : ARGS
+const INPUTS = readdir(joinpath(@__DIR__, "inputs"))
 
 """
     run_solution(source_path, input_path, ::Val{T}) -> Vector{String}
