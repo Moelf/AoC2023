@@ -29,11 +29,11 @@ function through_all_maps(seed, seed_maps)
     return seed
 end
 
-const F = Base.Fix2(through_all_maps, seed_maps)
 function main(path)
     seed_str, rest_str... = split(read(path, String), "\n\n")
     seed_nums = parse.(Int, split(seed_str)[2:end])
     seed_maps = seed_map.(rest_str)
+    F = Base.Fix2(through_all_maps, seed_maps)
     println(minimum(F, seed_nums))
 
     seed_groups = Iterators.partition(seed_nums, 2)
