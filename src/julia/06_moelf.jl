@@ -1,11 +1,17 @@
-boat_distance(hold, total_time) = hold * (total_time - hold)
-
+"""
+h*t - h^2 = B
+h^2 - h*t + B = 0
+h = (t ± sqrt(t^2 - 4B)) / 2
+you need to round up the smaller root and round down the larger root
+and compute the number of integers between them and +1
+"""
 function ways_to_win(total_time, to_beat)
-    ways = 0
-    for i in 1:total_time
-        ways += boat_distance(i, total_time) > to_beat
-    end
-    return ways
+    discri = total_time^2 - 4to_beat
+    discri < 0 && return 0
+    sq = sqrt(discri)
+    small_root = ceil(Int, (total_time - sq) / 2)
+    larger_root = floor(Int, (total_time + sq) / 2)
+    return larger_root - small_root + 1
 end
 
 function main(path)
