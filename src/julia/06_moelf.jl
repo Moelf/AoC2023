@@ -1,6 +1,12 @@
-boat_distance(hold, total) = hold * (total - hold)
+boat_distance(hold, total_time) = hold * (total_time - hold)
 
-ways_to_win(total_time, to_beat) = sum(i -> boat_distance(i, total_time) > to_beat, 1:total_time)
+function ways_to_win(total_time, to_beat)
+    ways = 0
+    for i in 1:total_time
+        ways += boat_distance(i, total_time) > to_beat
+    end
+    return ways
+end
 
 function main(path)
     time_str, dist_str = readlines(path)
