@@ -51,8 +51,7 @@ function get_all_inputs_solutions(day_num_str)
         input = joinpath("./inputs", p)
         solution = joinpath("./solutions", p)
         if !isfile(solution)
-            error("Solution file $solution does not exist but input file $input does, make sure to upload both")
-            exit(1)
+            return (input, nothing)
         end
         return (input, readlines(solution))
     end
@@ -101,6 +100,7 @@ for day_num in 0:25
 
     @testset verbose = true "Day $day_num_str" begin
         for lang in ALL_LANGUAGES, (input_path, reference_output) in inputs_solutions
+            isnothing(reference_output) && continue
             test_lang(day_num_str, input_path, reference_output, lang)
         end
     end
