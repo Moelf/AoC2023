@@ -32,17 +32,18 @@ end
 function main(path)
     lines = split.(readlines(path))
     hand_strs, bids = first.(lines), parse.(Int, last.(lines))
-    hands = Hand[]
-    hands2 = Hand[]
-    foreach(hand_strs, bids) do hand_str, b
+    hands = map(hand_strs, bids) do hand_str, b
         cards = [CARDS_DICT[c] for c in hand_str]
         counts = card_counts(cards)
-        push!(hands, Hand(counts, cards, b))
-        counts2 = card_counts(cards; joker=true)
-        push!(hands2, Hand(counts2, cards, b))
+        Hand(counts, cards, b)
     end
-
     println(total(hands))
+
+    hands2 = map(hand_strs, bids) do hand_str, b
+        cards = [CARDS_DICT_JOKER[c] for c in hand_str]
+        counts = card_counts(cards; joker=true)
+        Hand(counts, cards, b)
+    end
     println(total(hands2))
 end
 
