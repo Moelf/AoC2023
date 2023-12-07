@@ -3,7 +3,6 @@ import sys
 import re
 import math
 
-
 def parse(infile):
     '''
     build the map

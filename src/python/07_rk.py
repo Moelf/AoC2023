@@ -3,6 +3,7 @@ import sys
 import re
 import math
 import collections
+CLEVER = True
 """
     Five of a kind, where all five cards have the same label: AAAAA
     Four of a kind, where four cards have the same label and one card has a different label: AA8AA
@@ -12,7 +13,18 @@ import collections
     One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
     High card, where all cards' labels are distinct: 23456
     6 - 0 respectively.
-    comparator uses    type * 14**5 + word(0-13) * 14**X ...
+    comparator uses    type * 15**5 + word(0-13) * 15**X ...
+
+
+    In Clever, type is 3**(5-1) = 81, 
+                       3**(4-1) + 3**(1-1) = 28,
+                       3**(3-1) + 3**(2-1) = 12,
+                       3**(3-1) + 3**(1-1) * 2 = 11, 
+                       3**(2-1) * 2 + 3**(1-1) * 1 = 7, 
+                       3**(2-1) * + 3**(1-1) * 3   = 6, 
+                       3**(1-1) * 5 = 5
+                       respectively.
+    When J is there, it always joins the highest one, that is if you have 2, 1, you need to add two J, you will only make 4, 1, but not 3, 2
 """
 
 d_map  = {**{str(i):i-1 for i in range(2, 10)}, **{"T": 9, "J":10, "Q": 11, "K": 12, "A": 13}}
@@ -28,6 +40,31 @@ def parse(infile):
         _ = line.split()
         l.append(( _[0].upper(), int(_[1]) ))
     return l
+
+def key_clever(hand, bid, playJ = False):
+    s = collections.Counter(hand)
+    NJ = s["J"]
+    NNonJMax = 0
+    score = 0
+    for i, (word, freq) in enumerate(s.most_common()):
+        if playJ:
+            if word == "J": 
+                continue
+            elif NNonJMax == 0: 
+                NNonJMax = freq
+                continue
+        score += 3 ** (freq - 1)
+    #  merge nonJ with highest frequency and number of J
+    if playJ:
+        score += 3 ** (NJ+NNonJMax-1)
+
+    for i in range(5):
+        score *= 15
+        if playJ :
+            score += d_map2[hand[i]]
+        else:
+            score += d_map[hand[i]]
+    return score
 
 def key_hand(hand, bid, playJ = False):
     """
@@ -100,7 +137,11 @@ def key_hand(hand, bid, playJ = False):
 
 def sol2(l):
     # rank will be the index + 1
-    l_s = sorted(l, key = lambda x : key_hand(x[0], x[1], True))
+    l_s = []
+    if CLEVER:
+        l_s = sorted(l, key = lambda x : key_clever(x[0], x[1], True))
+    else:
+        l_s = sorted(l, key = lambda x : key_hand(x[0], x[1], True))
     s = 0
     for i, (_, bid) in enumerate(l_s):
         #  print(i+1, _, bid)
@@ -109,7 +150,10 @@ def sol2(l):
 
 def sol1(l):
     # rank will be the index + 1
-    l_s = sorted(l, key = lambda x : key_hand(x[0], x[1]))
+    if CLEVER:
+        l_s = sorted(l, key = lambda x : key_clever(x[0], x[1]))
+    else:
+        l_s = sorted(l, key = lambda x : key_hand(x[0], x[1]))
     s = 0
     for i, (_, bid) in enumerate(l_s):
         #  print(i+1, _, bid)
