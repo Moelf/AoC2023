@@ -20,18 +20,18 @@ def parse(infile):
 
 def sub_sol(t, d):
     delta = (t**2/4-d-1) ** 0.5 
-    print(t/2 + delta, t/2 - delta)
+    #  print(t/2 + delta, t/2 - delta)
     sol2 = max(math.floor(t/2 + delta), 0)
     sol1 = min(math.ceil(t/2 - delta), t)
-    print(sol1, sol2, sol2 - sol1 + 1)
+    #  print(sol1, sol2, sol2 - sol1 + 1)
     num = sol2 - sol1 + 1
     return max(num, 1)
 
 def sol():
     with open(sys.argv[1], 'r') as infile: 
         l_times, l_dists = parse(infile)
-        print(l_times)
-        print(l_dists)
+        #  print(l_times)
+        #  print(l_dists)
         mul = 1
         # n for charing, to speed n
         # time - n for running, distance d = n * (time - n)
