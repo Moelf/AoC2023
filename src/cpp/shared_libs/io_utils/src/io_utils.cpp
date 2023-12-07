@@ -18,4 +18,16 @@ std::vector<std::string> parseInputFile(const fs::path& path) {
     return parsed_file;
 }
 
+std::vector<std::string> splitString(const std::string & line, const std::string && delim) {
+    std::regex pattern("(" + delim + ")");
+
+    std::sregex_token_iterator it(line.begin(), line.end(), pattern, -1);
+    std::sregex_token_iterator end;
+
+    std::vector<std::string> result(it, end);
+    std::vector<std::string> ret_val;
+    std::for_each(result.begin(), result.end(),[&ret_val](const std::string& str){ret_val.push_back(str);});
+    return ret_val;
+} 
+
 } // io_utils
