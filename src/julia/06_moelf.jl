@@ -9,8 +9,10 @@ function ways_to_win(total_time, to_beat)
     discri = total_time^2 - 4to_beat
     discri < 0 && return 0
     sq = sqrt(discri)
-    small_root = ceil(Int, (total_time - sq) / 2)
-    larger_root = floor(Int, (total_time + sq) / 2)
+    small_root = (total_time - sq) / 2
+    small_root = isinteger(small_root) ? Int(small_root)+1 : ceil(Int, small_root)
+    larger_root = (total_time + sq) / 2
+    larger_root = isinteger(larger_root) ? Int(larger_root)-1 : floor(Int, larger_root)
     return larger_root - small_root + 1
 end
 
