@@ -2,28 +2,6 @@
 import sys
 import re
 from functools import reduce
-"""
-    Five of a kind, where all five cards have the same label: AAAAA
-    Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-    Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-    Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-    Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-    One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-    High card, where all cards' labels are distinct: 23456
-    6 - 0 respectively.
-    comparator uses    type * 15**5 + word(0-13) * 15**X ...
-
-
-    In Clever, type is 3**(5-1) = 81, 
-                       3**(4-1) + 3**(1-1) = 28,
-                       3**(3-1) + 3**(2-1) = 12,
-                       3**(3-1) + 3**(1-1) * 2 = 11, 
-                       3**(2-1) * 2 + 3**(1-1) * 1 = 7, 
-                       3**(2-1) * + 3**(1-1) * 3   = 6, 
-                       3**(1-1) * 5 = 5
-                       respectively.
-    When J is there, it always joins the highest one, that is if you have 2, 1, you need to add two J, you will only make 4, 1, but not 3, 2
-"""
 
 def parse(infile):
     '''
