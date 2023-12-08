@@ -32,7 +32,7 @@ function main(path)
     factors = map(locations) do loc
         find_steps(instructs_cycle, network, loc; pred = endswith("Z"))
     end
-    println(lcm(factors...))
+    println(lcm(factors))
 
 end
 
