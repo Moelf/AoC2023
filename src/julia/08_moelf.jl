@@ -29,7 +29,9 @@ function main(path)
     println(p1)
 
     locations = filter(endswith("A"), collect(keys(network)))
-    factors = find_steps.(Ref(instructs_cycle), Ref(network), locations; pred = endswith("Z"))
+    factors = map(locations) do loc
+        find_steps(instructs_cycle, network, loc; pred = endswith("Z"))
+    end
     println(lcm(factors...))
 
 end
