@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import re
-import math
-import collections
+from functools import reduce
 """
     Five of a kind, where all five cards have the same label: AAAAA
     Four of a kind, where four cards have the same label and one card has a different label: AA8AA
@@ -77,33 +76,53 @@ def sol2(seq, d):
 
     # I can blend this in the previous loop, but for cleanness, I prefer not to
     # find the loop for each start
-    #  stores [loop size, [n steps for this Z ]]
+    #  stores [loop size, set(n steps for this Z )]
     l_good_endings = []
     for start in l_start:
         current = start
-        d_nstep_from_start = set([])
+        d_nstep_from_start = []
         l_step_ending_in_Z = []
         nseq = 0
         while current not in d_nstep_from_start:
             if current[-1] == "Z":
                 l_step_ending_in_Z.append(nseq)
-            d_nstep_from_start.insert(curent)
+            d_nstep_from_start.append(current)
             current = dmap[current]
             # for the next
             nseq += 1
-        l_good_endings.append(len(d_nstep_from_start), [ l_step_ending_in_Z])
+        #  print("last", current, d_nstep_from_start)
+        # size of the loop first
+        l_good_endings.append([len(d_nstep_from_start) - d_nstep_from_start.index(current), set(l_step_ending_in_Z)])
         pass
 
-    while True:
-        break
+    l_sets = [set(i[1]) for i in l_good_endings]
+    #  print("MAP", dmap)
+    #  print(l_good_endings)
+    #  print("START", len(seq))
+    # hacky answer due to the nature of the problem set:
+    return reduce(lambda x, y : x * y, [i[0] for i in l_good_endings]) * len(seq)
+
+    inters = set()
+    it = 0
+    while len(inters) == 0:
+        it += 1
+        inters = reduce(lambda x, y : x & y, l_sets)
+        for i, (num, s) in enumerate(l_good_endings):
+            #  print([i + num for i in s])
+            l_sets[i] |= set([i + it * num for i in s])
+        #  print(l_sets)
         pass
 
-    return 0
+    # assumed there is a solution
+    #  print(inters, seq, len(seq))
+    nseq = min(inters)
+
+    return nseq * len(seq)
 
 def main():
     with open(sys.argv[1], 'r') as infile: 
         seq, d = parse(infile)
-        print(seq, d)
+        #  print(seq, d)
         print(sol1(seq, d))
         print(sol2(seq, d))
     pass
