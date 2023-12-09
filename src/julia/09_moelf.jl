@@ -1,21 +1,13 @@
 using DelimitedFiles: readdlm
 
-function predict(vec; rev=false)
-    if allequal(vec)
-        first(vec)
-    elseif rev
-        first(vec) - predict(diff(vec); rev)
-    else
-        last(vec) + predict(diff(vec); rev)
-    end
-end
+predict(vec) = allequal(vec) ? last(vec) : last(vec) + predict(diff(vec))
 
 function main(path)
     M = readdlm(path, Int)
     p1 = p2 = 0
     for row in eachrow(M)
         p1 += predict(row)
-        p2 += predict(row; rev=true)
+        p2 += predict(reverse(row))
     end
     println(p1)
     println(p2)
