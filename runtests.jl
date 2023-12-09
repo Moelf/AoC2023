@@ -90,6 +90,12 @@ for day_num in 0:25
             break
         end
     end
+end
+
+sleep(1)
+
+for day_num in 0:25
+    day_num_str = lpad(day_num, 2, '0')
     inputs_solutions = get_all_inputs_solutions(day_num_str)
     isempty(inputs_solutions) && continue
 
