@@ -86,6 +86,7 @@ for day_num in 0:25
         try
             Downloads.download("https://adventofcode.com/2023/day/$day_num/input", input_path; headers)
         catch e
+            @show e
             break
         end
     end
