@@ -82,7 +82,6 @@ end
 for day_num in 0:25
     day_num_str = lpad(day_num, 2, '0')
     input_path = joinpath(@__DIR__, "inputs", "$(day_num_str)_moelf.txt")
-    @show input_path
     if day_num > 0 && !isempty(cookie)
         try
             Downloads.download("https://adventofcode.com/2023/day/$day_num/input", input_path; headers)
