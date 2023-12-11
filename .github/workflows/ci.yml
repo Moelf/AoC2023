@@ -21,7 +21,7 @@ jobs:
       - name: Setup Julia
         uses: julia-actions/setup-julia@v1
         with:
-          version: 1.9
+          version: 1.10-rc2
           arch: ${{ matrix.arch }}
       - name: Setup bazel
         uses: bazelbuild/setup-bazelisk@v2
