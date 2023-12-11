@@ -23,7 +23,7 @@ def dis(pos1, pos2, empty_row, empty_col, sol2 = False):
     dist += abs(pos1[0] - pos2[0])
     dist += abs(pos1[1] - pos2[1])
 
-    print(pos1, pos2, dist)
+    #  print(pos1, pos2, dist)
     return dist
 
 
@@ -52,8 +52,8 @@ def sol1(m):
             l_empty_col.append(c)
 
 
-    print(l_empty_row)
-    print(l_empty_col)
+    #  print(l_empty_row)
+    #  print(l_empty_col)
     s = 0
     s2 = 0
     for i in range(len(l_galaxy)):
@@ -70,8 +70,8 @@ def main():
         m = parse(infile)
         #  print(m)
         sol = sol1(m)
-        print(sol)
-        #  print(sol[1])
+        print(sol[0])
+        print(sol[1])
     pass
 
 main()
