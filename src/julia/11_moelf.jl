@@ -7,12 +7,12 @@ function impl(MAP, exp_const)
     for (i, j) in zip(axes(MAP, 1), axes(MAP, 2))
         if all(==('.'), @view MAP[i, :])
             mask = findall(c -> c[1] < i, galaxies)
-            galaxies[mask] .-= CI(N, 0)
+            galaxies[mask] .-= Ref(CI(N, 0))
         end
 
         if all(==('.'), @view MAP[:, j])
             mask = findall(c -> c[2] < j, galaxies)
-            galaxies[mask] .-= CI(0, N)
+            galaxies[mask] .-= Ref(CI(0, N))
         end
     end
 
