@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 template<typename T>
 bool isInteger(T var) {
@@ -15,16 +16,14 @@ bool isInteger(T var) {
 
 std::vector<std::pair<int, int>> convertInputs(const std::vector<std::string> & input_lines) {
     auto parse_line = [](const std::string & line) {
-        const auto split_result = io_utils::splitString(line, std::string(" "));
+        const std::vector<std::string> split_result = io_utils::splitString(line, std::string(" "));
         std::vector<int> result;
-        for_each(split_result.begin(), split_result.end(),
-            [&result](const auto & a){ 
-                if (!a.empty())
-                {
-                    result.push_back(io_utils::stringToNumber<int>(a));
+        std::for_each(split_result.begin(), split_result.end(),
+            [&result](const auto & v) {
+                if (!v.empty()) {
+                    result.push_back(io_utils::stringToNumber<int>(v));
                 }
-            }
-        );
+            });
         return result;
     };
 

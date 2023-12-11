@@ -15,17 +15,11 @@ namespace fs = std::filesystem;
 std::vector<std::string> parseInputFile(const fs::path& path);
 
 template <typename T = std::string>
-T stringToNumber(const std::string & arg)
-{
-    if (std::is_same_v<T, int>) {
-        return std::stoi(arg);
-    } else if (std::is_same_v<T, long>) {
-        return std::stol(arg);
-    } else {
-        return T();
-    }
-}
+T stringToNumber(const std::string & arg);
 
-std::vector<std::string> splitString(const std::string & line, const std::string && delim);
+template<typename T = std::string>
+std::vector<T> splitString(const std::string & line, const std::string && delim);
 
 } // io_utils
+
+#include "io_utils.inl"
