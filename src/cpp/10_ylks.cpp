@@ -178,7 +178,7 @@ std::vector<Coordinate> getOccupancyMapNeighbors(const OccupancyMap& map, const 
 template<typename Map_T, typename getEdgeFunc_T, typename changeMapFunc_T>
 void propagateMap(Map_T& map, const Coordinate & start, getEdgeFunc_T getEdge, changeMapFunc_T changeMap) {
     std::queue<Coordinate> candidates({start});
-    // Don't queue multiple candidates, this happens since this is a densely populated graph
+    // Don't queue duplicate candidates, this happens since this is a densely connected graph
     std::unordered_set<Coordinate, PairHash> queued_candidates = {start};
     std::unordered_set<Coordinate, PairHash> explored = {start};
     while (!candidates.empty()) {
@@ -195,7 +195,7 @@ void propagateMap(Map_T& map, const Coordinate & start, getEdgeFunc_T getEdge, c
             }
         );
 
-        changeMapFunc_T(map, v, neighbors);
+        changeMap(map, v, neighbors);
         candidates.pop();
     }
 }
