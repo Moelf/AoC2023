@@ -15,7 +15,13 @@ const CONNECTIONS = Dict(
 
 function in_out(pipe, in_dir)
     E1, E2 = CONNECTIONS[pipe]
-    return in_dir == E1 ? E2 : E1
+    if in_dir == E1
+        E2
+    elseif in_dir == E2
+        E1
+    else
+        nothing
+    end
 end
 
 function step(M, here, here_dir)
@@ -43,51 +49,64 @@ end
 function main(path)
     M = stack(readlines(path); dims=1)
     pos = findfirst(==('S'), M)::CI
-    dir_idx = findfirst(FOUR_DIRS) do dir
-        !isassigned(M, pos+dir) && return false
+    dir_idx = findall(FOUR_DIRS) do dir
+        !isassigned(M, pos + dir) && return false
         sym = M[pos+dir]
         !haskey(CONNECTIONS, sym) && return false
         out_dir = in_out(sym, -dir)
         !isnothing(out_dir)
     end
-    dir = FOUR_DIRS[dir_idx]
-    p1, main_loop_pipes = impl1(M, pos, dir)
+    dirs = FOUR_DIRS[dir_idx]
+    p1, main_loop_pipes = impl1(M, pos, dirs[begin])
     println(p1)
-    M_str = string.(M)
-    for i in CartesianIndices(M_str)
-        if i in main_loop_pipes
-            M_str[i] = Base.text_colors[:red] * M_str[i]
+
+    # replace 'S' with real pipe
+    M[pos] = findfirst(CONNECTIONS) do v
+        Set(Tuple(v)) == Set(Tuple(dirs))
+    end
+    # clear out non-pipe map with ' '
+    for c in CartesianIndices(M)
+        if c ∉ main_loop_pipes
+            M[c] = ' '
         end
-        M_str[i] = Base.text_colors[:default] * M_str[i]
     end
 
-    for r in eachrow(M_str)
-        println(join(r))
-    end
+    for col in eachcol(M)
+        inside = false
+        path_start = area_start = 0
+        if first(col) != ' '
+            path_start = 1
+        else
+            area_start = 1
+        end
+        for (i, c) in enumerate(col)
+            # maintain state
+            c in (' ', '|') && continue
 
-    p2 = 0
-    for ir in axes(M, 1)
-        inside = false 
-        pipe_start = ' '
-        for ic in axes(M, 2)
-            pos = CI(ir, ic)
-            on_boundary = pos in main_loop_pipes
-            if on_boundary
-                sym = M[pos]
-                if sym == '|'
+            prevc = get(col, i - 1, '.')
+            if prevc == ' ' # area -> path
+                col[area_start:i-1] .= inside ? 'I' : 'O'
+                area_start = nothing
+                path_start = i
+            end
+
+            nextc = get(col, i + 1, '.')
+            if nextc == ' ' # path -> area
+                if string(col[path_start], c) ∉ ("FL", "7J")
                     inside = !inside
-                elseif pipe_start == ' '
-                    pipe_start = sym
-                elseif sym != '-'
-
-
                 end
+                area_start = i + 1
+                path_start = nothing
+            elseif c in ('L', 'J', '-') # path -> new path
+                if string(col[path_start], c) ∉ ("FL", "7J")
+                    inside = !inside
+                end
+                path_start = i + 1
             end
         end
     end
-    println(p2)
+    println(count(==('I'), M))
 
 end
-
 
 (abspath(PROGRAM_FILE) == @__FILE__) && (main(ARGS[1]))
