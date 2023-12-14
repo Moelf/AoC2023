@@ -102,3 +102,11 @@ cc_binary(
         "//src/cpp/shared_libs/io_utils:io_utils"
     ]
 )
+
+cc_binary(
+    name = "11_ylks",
+    srcs = ["11_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ]
+)
