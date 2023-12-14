@@ -70,3 +70,35 @@ cc_binary(
         "//src/cpp/shared_libs/io_utils:io_utils"
     ]
 )
+
+cc_binary(
+    name = "07_ylks",
+    srcs = ["07_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ]
+)
+
+cc_binary(
+    name = "08_ylks",
+    srcs = ["08_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ]
+)
+
+cc_binary(
+    name = "09_ylks",
+    srcs = ["09_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ]
+)
+
+cc_binary(
+    name = "10_ylks",
+    srcs = ["10_ylks.cpp"],
+    deps = [
+        "//src/cpp/shared_libs/io_utils:io_utils"
+    ]
+)
