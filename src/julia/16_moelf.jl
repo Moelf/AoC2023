@@ -100,4 +100,5 @@ function main(path)
     p2, _ = findmax(counter, all_starts)
     println(p2)
 end
-main(ARGS[1])
+
+(abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])
