@@ -13,14 +13,7 @@ def parse():
 def dim(l):
     return len(l), len(l[0])
 
-def sol1(l):
-    return(sol(l))
-    pass
-
-def sol2(l):
-    return(sol(l, False))
-
-def sol(l, sol1 = True):
+def sol_first(l, sol1 = True):
     height, width = dim(l)
     # min heat loss of ID=(pos row, pos col, direction row, direction col, step) : loss
     # the direction is how you enter this tile
@@ -90,11 +83,10 @@ def sol(l, sol1 = True):
     
     return min([l for ID, l in mhl.items() if ID[0] == height - 1 and ID[1] == width - 1])
 
-
 def main():
     l = parse()
-    print(sol1(l))
-    print(sol2(l))
+    print(sol_first(l))
+    print(sol_first(l, False))
     pass
 
 main()
