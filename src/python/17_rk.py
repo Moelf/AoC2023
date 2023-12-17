@@ -100,7 +100,7 @@ def sol_second_weighted_consideration(l, sol1 = True):
 
         loss += l[r][c]
         if loss >= mhl.get(ID, math.inf):
-                continue
+            continue
 
         # cache first
         mhl[ID] = loss
@@ -133,7 +133,7 @@ def sol_second_weighted_consideration(l, sol1 = True):
         
         pass
     
-    return min([l for ID, l in mhl.items() if ID[0] == height - 1 and ID[1] == width - 1])
+    return min([l for ID, l in mhl.items() if ID[0] == height - 1 and ID[1] == width - 1 and ID[4] >= min_step])
 
 def main():
     l = parse()
