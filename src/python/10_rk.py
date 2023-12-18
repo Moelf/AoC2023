@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 import collections
+import util
 
 """
 assuming there is loop
@@ -150,37 +151,8 @@ def sol1(IN):
             continue
         m[IN[1][0]][IN[1][1]] = c
             
+    ninside = util.calculate_inside(l_loop, m)
 
-    ninside = 0
-    for x, line in enumerate(l_loop):
-        boundary_start = ""
-        inside = False
-        #  print(line)
-        for y, boundary in enumerate(line):
-            if boundary:
-                t = m[x][y]
-                #  print(t)
-                if t == "|":
-                    #  print("flip")
-                    inside = not inside
-                elif boundary_start == "":
-                    #  print("start with ", t)
-                    # this can't be '-'
-                    boundary_start = t
-                elif t != "-":
-                    # skip over -
-                    #  print("end in", t)
-                    #  print(f"{boundary_start}{t}")
-                    if f"{boundary_start}{t}" in ["FJ", "L7"]:
-                        #  print("flip")
-                        # flip only in those cases
-                        inside = not inside
-                    boundary_start = ""
-            elif inside:
-                #  print(x,y)
-                ninside += 1
-
-        pass
 
     #  print(l_loop)
     #  #  initialize outtermost boundary first
