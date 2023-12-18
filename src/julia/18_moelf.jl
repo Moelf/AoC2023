@@ -4,37 +4,21 @@ const DIRS = Dict(
     "R" => R, "D" => D, "L" => L, "U" => U,
     '0' => R, '1' => D, '2' => L, '3' => U)
 
-function make_poly(dirs, nums)
-    POS = CI(0, 0)
-    PATH = CI[]
+# https://en.wikipedia.org/wiki/Shoelace_formula
+# https://en.wikipedia.org/wiki/Pick's_theorem
+function impl(dirs, nums)
+    POS1 = POS2 = CI(0, 0)
+    b = A = 0
     for (D, N) in zip(dirs, nums)
         for _ in 1:N
-            POS += D
-            push!(PATH, POS)
+            b += 1
+            POS2 += D
+            A += POS1[1] * POS2[2] - POS2[1] * POS1[2]
+            POS1 = POS2
         end
     end
-    return PATH
-end
-# https://en.wikipedia.org/wiki/Shoelace_formula
-function shoelace(poly)
-    a = 0
-    for i in 1:lastindex(poly)-1
-        p1 = poly[i]
-        p2 = poly[i+1]
-        a += p1[1] * p2[2] - p2[1] * p1[2]
-    end
-    return abs(a ÷ 2)
-end
-# https://en.wikipedia.org/wiki/Pick's_theorem
-function in_area(poly)
-    A = shoelace(poly)
-    b = length(poly)
-    return A + 1 - b ÷ 2
-end
-
-function impl(dirs, nums)
-    poly = make_poly(dirs, nums)
-    return in_area(poly) + length(poly)
+    in_area = abs(A)÷2 + 1 - b ÷ 2
+    return in_area + b
 end
 
 function main(path)
