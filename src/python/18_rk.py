@@ -163,12 +163,27 @@ def sol2(l, sol2=True):
         #  print(output, s_prevline)
     return output
 
+def sol_shoelace(l, sol2=True):
+    pos = (0, 0)
+    output = 0
+    b = 0
+    for di, s, color in l:
+        if sol2:
+            s, di = decode(color)
+        posnew = util.tuple_add(pos, util.tuple_mul(util.direction_map[di], s)) 
+        b += s
+        output += 0.5 * (posnew[0] * pos[1] - posnew[1] * pos[0])
+        pos = posnew
+    return int(abs(output) + 1 + b/2)
+
 def main():
     l = parse()
     #  print(l)
     #  print(sol(l))
-    print(sol2(l, False))
-    print(sol2(l))
+    #  print(sol2(l, False))
+    #  print(sol2(l))
+    print(sol_shoelace(l, False))
+    print(sol_shoelace(l))
     pass
 
 main()
