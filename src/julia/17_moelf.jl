@@ -14,31 +14,29 @@ struct State
     heat_loss::Int
 end
 heat(s::State) = s.heat_loss
+Base.isless(s1::State, s2::State) = heat(s1) < heat(s2)
 
 function pathfinding(MAP, MIN, MAX)
     DEST = CI(size(MAP))
 
     Aqueue = [State(MapState(CI(1, 1), CI(0, 0), 0), 0)]
-    seen = Dict{MapState, Int}()
+    seen = Set{MapState}()
 
     while !isempty(Aqueue)
-        state = pop!(Aqueue)
+        state = popfirst!(Aqueue)
         (; loc, heat_loss) = state
-        risk_state = loc
-        haskey(seen, risk_state) && continue
+        loc ∈ seen && continue
 
         (; pos, dir, n_block) = loc
 
-        seen[risk_state] = heat_loss
-        pos == DEST && n_block >= MIN && break
+        push!(seen, loc)
+        pos == DEST && n_block >= MIN && return heat_loss
 
         for new_dir in ALL_DIRS
             new_pos = pos + new_dir
             new_n_block = (new_dir == dir ? n_block + 1 : 1)
 
-            if !isassigned(MAP, new_pos) ||
-                new_n_block > MAX ||
-                dir == -new_dir
+            if dir == -new_dir || new_n_block > MAX || !isassigned(MAP, new_pos)
                 continue
             end
 
@@ -48,16 +46,8 @@ function pathfinding(MAP, MIN, MAX)
 
             Δ_heat = MAP[new_pos]
             ns = State(MapState(new_pos, new_dir, new_n_block), heat_loss + Δ_heat)
-            i = searchsortedfirst(Aqueue, ns; by=heat, rev=true)
+            i = searchsortedfirst(Aqueue, ns)
             insert!(Aqueue, i, ns)
-        end
-    end
-
-    return minimum(seen) do (k, v)
-        if k.pos == DEST && k.n_block >= MIN
-            v
-        else
-            MAX_HEAT
         end
     end
 end

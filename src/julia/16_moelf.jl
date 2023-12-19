@@ -7,57 +7,46 @@ struct Photon
     dir::CI
 end
 
-interact(photon, tile_loc, ::Val{'.'}) = [Photon(tile_loc, photon.dir)]
-
-function interact(photon, tile_loc, ::Val{'|'}) 
-    if photon.dir in (U, D)
+function interact(photon, tile_loc, tile) 
+    if tile == '.'
         [Photon(tile_loc, photon.dir)]
-    else
-        [Photon(tile_loc, U), Photon(tile_loc, D)]
+    elseif tile == '|'
+        if photon.dir in (U, D)
+            [Photon(tile_loc, photon.dir)]
+        else
+            [Photon(tile_loc, U), Photon(tile_loc, D)]
+        end
+    elseif tile == '-'
+        if photon.dir in (L, R)
+            [Photon(tile_loc, photon.dir)]
+        else
+            [Photon(tile_loc, L), Photon(tile_loc, R)]
+        end
+    elseif tile == '\\'
+        dir = photon.dir
+        new_dir = if dir == R
+            D
+        elseif dir == L
+            U
+        elseif dir == U
+            L
+        elseif dir == D
+            R
+        end
+        [Photon(tile_loc, new_dir)]
+    elseif tile == '/'
+        dir = photon.dir
+        new_dir = if dir == R
+            U
+        elseif dir == L
+            D
+        elseif dir == U
+            R
+        elseif dir == D
+            L
+        end
+        [Photon(tile_loc, new_dir)]
     end
-end
-
-function interact(photon, tile_loc, ::Val{'-'}) 
-    if photon.dir in (L, R)
-        [Photon(tile_loc, photon.dir)]
-    else
-        [Photon(tile_loc, L), Photon(tile_loc, R)]
-    end
-end
-
-function interact(photon, tile_loc, ::Val{'\\'}) 
-    dir = photon.dir
-    new_dir = if dir == R
-        D
-    elseif dir == L
-        U
-    elseif dir == U
-        L
-    elseif dir == D
-        R
-    end
-    [Photon(tile_loc, new_dir)]
-end
-
-function interact(photon::Photon, tile_loc, ::Val{'/'}) 
-    dir = photon.dir
-    new_dir = if dir == R
-        U
-    elseif dir == L
-        D
-    elseif dir == U
-        R
-    elseif dir == D
-        L
-    end
-    [Photon(tile_loc, new_dir)]
-end
-
-function step(photon, MAP)
-    next_pos = photon.pos + photon.dir
-    !isassigned(MAP, next_pos) && return nothing
-    tile = MAP[next_pos]
-    return interact(photon, next_pos, Val(tile))
 end
 
 function count_energy(init_photon, M)
@@ -68,8 +57,10 @@ function count_energy(init_photon, M)
         if isassigned(M, photon.pos)
             push!(energized, photon)
         end
-        new_photons = step(photon, M)
-        isnothing(new_photons) && continue
+        next_pos = photon.pos + photon.dir
+        !isassigned(M, next_pos) && continue
+        tile = M[next_pos]
+        new_photons = interact(photon, next_pos, tile)
 
         filter!(∉(energized), new_photons)
         append!(photons, new_photons)
