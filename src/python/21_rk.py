@@ -31,7 +31,6 @@ def walk(pos, m):
         else:
             yield newpos
 
-
 def find_for_one(s, m):
     """
     given a starting point in a block, 
@@ -175,7 +174,46 @@ def sol2(s, m, ns):
     # in case it is maxed out somewhere else
     boundary_block_visited = {}
     dq = []
-    #  step 0 and the "real start"
+    
+
+    # first consider only going in the 4 major direction(straight line
+    tup_s, visited_s = border_map[s]
+    for di in range(4):
+        di_ch  = util.diDecode[di]
+        di_vec = util.direction_map[di_ch]
+        l_start, step_here = getattr(tup_s, di_ch)
+        #  if di == 0:
+            #  if lpc == nc-1 and step+newstep+1 <= ns: #R
+                #  heappush(dq, (step+newstep+1, util.tuple_add(curr_pos, di_vec)))
+        #  elif di == 1:
+            #  if lpr == nr-1 and step+newstep+1 <= ns: #D
+                #  heappush(dq, (step+newstep+1, util.tuple_add(curr_pos, di_vec)))
+        #  elif di == 2:
+            #  if lpc == 0 and step+newstep+1 <= ns: #L
+                #  heappush(dq, (step+newstep+1, util.tuple_add(curr_pos, di_vec)))
+        #  elif di == 3:
+            #  if lpr == 0 and step+newstep+1 <= ns: #U
+                #  heappush(dq, (step+newstep+1, util.tuple_add(curr_pos, di_vec))
+
+        while len(dq):
+            step, pos = heappop(dq)
+            if step > ns: 
+                continue
+            global_pos = (pos[0] // nr, pos[1] // nc)
+            local_pos = (pos[0] % nr, pos[1] % nc)
+            diff_even_odd = int((local_pos[0] - s[0] + local_pos[1] - s[1]) % 2 != step % 2)
+
+            # check if this specific start is stored already 
+            if local_pos not in border_map:
+                raise RuntimeError("YOU ALWAYS START IN A BOUNDARY/START FOR A BLOCK.")
+
+            tup, visited = border_map[local_pos]
+            if step + tup.max < ns:
+                if global_pos not in maxed_out_visited_blocks:
+                    # if not maxed out by others yet
+                    maxed_out_visited_blocks[global_pos] = diff_even_odd
+
+    dq = []
     heappush(dq, (0, s) )
     while len(dq):
         # prioritize lower steps
@@ -348,13 +386,14 @@ def getN(l, m, ns):
 
 def sol2_cheat(s, m, ns):
     """
-    matrix has dim of mxn, assuming it's nxn
-    1. from one start to another start, there's no #, it takes n steps precisely
-    2. it takes n-1 to flood a whole block from the start
+    matrix has dim of mxn, 
+    1. assuming dimension is always n x n
+    2. from one start to another start, there's no #, it takes n steps precisely
+    3. it takes n-1 to flood a whole block from the start
         therefore, after n-1 step, the first block is flood.
                    after n step, the neighboring start is reached. The edge of the neighboring block also start to flood
                    after 2n step, the flood from the 2nd start permeates the entier 2nd block. The flood from the edge is not faster. 
-    3. start is at the center
+    4. start is at the center
         this is important because it guarantees that at n//2 step, the flood side way does not beat the central one
     """
 
@@ -416,50 +455,15 @@ def main():
 
     # example
     #  print(sol1(s, m, 6))
-    print(sol1(s, m, 64))
-    #  print()
-    #  print(sol2(s, m, 0))
-    #  print(sol2(s, m, 1))
-    #  print(sol2(s, m, 2))
-    #  print(sol2(s, m, 3))
-    #  print(sol2(s, m, 4))
-    #  #  print(sol2(s, m, 5))
-
-    #  v1 = sol2(s, m, 50)
-    #  print(v1)
-    #  v2 = sol2_old(s, m, 50)
-    #  for x, step in v2.items():
-        #  if step % 2 != 10 % 2:
-            #  continue
-        #  if x not in v1:
-            #  print("missing", x)
-        #  elif step % 2 != v1[x] % 2:
-            #  print("different even/odd", x)
     #  print(sol2(s, m, 6))
-    #  print(sol2_old(s, m, 6))
-    #  print()
-
-    #  print(sol2(s, m, 8))
-    #  print(sol2_old(s, m, 8))
-    #  print()
-
     #  print(sol2(s, m, 10))
-    #  print(sol2_old(s, m, 10))
-    #  print()
+    #  print(sol2(s, m, 50))
+    #  print(sol2(s, m, 100))
+    #  print(sol2(s, m, 500))
+    #  print(sol2(s, m, 1000))
+    #  print(sol2(s, m, 5000))
 
-    #  _, v = find_for_one(s, m)
-    #  print(m._nc, m._nr)
-    #  print(max(v.values()))
-
-    #  print(sol2_cheat(s, m, 6))
-    #  print(sol2_cheat(s, m, 10))
-    #  print(sol2_cheat(s, m, 50))
-    #  print(sol2_cheat(s, m, 100))
-    #  print(sol2_cheat(s, m, 500))
-    #  print(sol2_cheat(s, m, 1000))
-    #  print(sol2_cheat(s, m, 5000))
-
-    #  print(sol1(s, m, 64))
+    print(sol1(s, m, 64))
     #  print(sol2_cheat(s, m, 131))
     print(sol2_cheat(s, m, 26501365))
     pass
