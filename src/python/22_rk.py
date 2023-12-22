@@ -83,7 +83,20 @@ def sol1(m_hold):
         pass
 
 
+    # from current brick to bricks depends on it
+    d_dependents = {}
+    # from current brick to bricks it depends on
+    d_dependees  = {}
 
+    for i in range(1, nbricks+1):
+        d_dependents[i] = []
+        d_dependees[i] = []
+
+    for i in range(1, nbricks+1):
+        for j in range(1, nbricks+1):
+            if m_hold[i][j]:
+                d_dependents[i].append(j)
+                d_dependees[j].append(i)
 
     # part 2
     nfall = 0
@@ -97,14 +110,12 @@ def sol1(m_hold):
                 continue
             this_fall.add(ibrick)
             #  print(f"consider {ibrick}")
-            for isb, supported_brick in enumerate(m_hold[ibrick]):
-                if not supported_brick: continue
-                #  print("will it fall", isb)
-
+            for isb in d_dependents[ibrick]:
                 found_other_support = False
-                for i_other_support in range(1, nbricks + 1):
-                    if i_other_support not in this_fall and m_hold[i_other_support][isb]:
+                for i_other_support in d_dependees[isb]:
+                    if i_other_support not in this_fall:
                         found_other_support = True
+                        break
                 if not found_other_support:
                     dq.append(isb)
         nfall += len(this_fall) - 1
