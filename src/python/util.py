@@ -1,18 +1,24 @@
 class matrix:
     def __init__(self, l):
         self._l = [[e for e in il] for il in l]
+        self._nr = len(self._l)
+        self._nc = len(self._l[0])
 
     def dim(self):
-        return len(self._l), len(self._l[0])
+        return self._nr, self._nc
 
     def __iter__(self):
         for x in self._l:
             yield x
 
+    def inbound(self, p):
+        return p[0] >= 0 and p[0] < self._nr and p[1] >= 0 and p[1] < self._nc
+
 
     def __getitem__(self, tup):
+        # do not do inbound check
         if type(tup) == type((0,0)):
-            return self._l[tup[0]][tup[1]]
+            return self._l[tup[0] % self._nr][tup[1] % self._nc]
         else:
             return self._l[tup]
 
