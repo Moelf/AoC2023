@@ -1,10 +1,22 @@
 class matrix:
-    def __init__(self, l):
+    """
+    a list of M lists with size N of the same type of element, default to be int(0)
+    [[],
+     [],
+     ...
+     []]
+    """
+    def __init__(self, l = [], default = 0):
         self._l = [[e for e in il] for il in l]
-        self._nr = len(self._l)
-        self._nc = len(self._l[0])
+        self.dim()
+        self._default = default
 
     def dim(self):
+        self._nr = len(self._l)
+        if len(self._l):
+            self._nc = len(self._l[0])
+        else:
+            self._nc = 0
         return self._nr, self._nc
 
     def __iter__(self):
@@ -23,7 +35,24 @@ class matrix:
             return self._l[tup]
 
     def __setitem__(self, tup, val):
-        self._l[tup[0]][tup[1]] = val
+        if type(tup) == type((0,0)):
+            if tup[0] >= self._nr:
+                for i in range(self._nr, tup[0]+1):
+                    self._l.append([])
+            self.dim()
+            if tup[1] >= self._nc:
+                for r in range(0, self._nr):
+                    for c in range(self._nc, tup[1]+1):
+                        self._l[r].append(self._default)
+
+            self._l[tup[0]][tup[1]] = val
+            self.dim()
+        else:
+            if tup >= self._nr:
+                for i in range(self._nr, tup+1):
+                    self._l.append([])
+            self._l[tup] = val
+            self.dim()
 
     def __str__(self):
         s = ""
