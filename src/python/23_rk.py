@@ -230,28 +230,82 @@ def sol(m, sol2):
             if pos != end:
                 q.append((pos, (-1, -1)))
     
-    #  print(d_graph)
-    q = [([start], 0)]
-    solution = None
-    max_s = 0
-    while len(q):
-        visited_nodes, step = q.pop()
-        start = visited_nodes[-1]
-        #  print(visited_nodes)
-        if start == end:
-            #  print(visited_nodes, step)
-            max_s = max(max_s, step)
-            if max_s == step:
-                solution = visited_nodes
-            continue
 
-        for next, added_step in d_graph[start]:
-            #  print("next", next)
-            if next in visited_nodes:
-                continue
-            q.append((visited_nodes + [next], step+added_step))
+    if len(sys.argv) <= 2:
+        # prepare for dfs
+        max_s = [-999]
 
+        l_mapped = list(d_graph.keys()) + [end]
+        istart = l_mapped.index(start)
+        iend = l_mapped.index(end)
+        graph_I = [[] for i in l_mapped]
+        visited = [False for i in l_mapped]
+        for this, l in d_graph.items():
+            ithis = l_mapped.index(this)
+            for next, step in l:
+                inext = l_mapped.index(next)
+                graph_I[ithis].append((inext, step))
+            pass
+
+        def dfs(graph_I, visited, this, step, max_s):
+            if this == iend:
+                max_s[0] = max(max_s[0], step)
+                return
+
+            for next, added_step in graph_I[this]:
+                if visited[next]:
+                    continue
+                visited[next] = True
+                dfs(graph_I, visited, next, step+added_step, max_s)
+                visited[next] = False
+
+        visited[istart] = True
+        dfs(graph_I, visited, istart, 0, max_s)
+        return max_s[0]
+
+
+        # 7 seconds
+        visited = set(start)
+        def dfs(d_graph, visited, this, step, max_s):
+            if this == end:
+                max_s[0] = max(max_s[0], step)
+                return
+
+            for next, added_step in d_graph[this]:
+                if next in visited:
+                    continue
+                visited.add(next)
+                dfs(d_graph, visited, next, step+added_step, max_s)
+                visited.remove(next)
+
+        dfs(d_graph, visited, start, 0, max_s)
+        return max_s[0]
+
+    
+    
+    #  40 second to map out the path for plotting
     if len(sys.argv) > 2:
+        q = [([start], 0)]
+        solution = []
+        max_s = 0
+        while len(q):
+            visited_nodes, step = q.pop()
+            this = visited_nodes[-1]
+            #  print(visited_nodes)
+            if this == end:
+                #  print(visited_nodes, step)
+                max_s = max(max_s, step)
+                if max_s == step:
+                    solution = visited_nodes
+                continue
+
+            for next, added_step in d_graph[this]:
+                #  print("next", next)
+                if next in visited_nodes:
+                    continue
+                #  visited_nodes.append(next)
+                q.append((visited_nodes + [next], step+added_step))
+
         plot(d_graph, m, sol2, solution)
 
     return max_s
