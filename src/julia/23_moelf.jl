@@ -1,81 +1,101 @@
 const CI = CartesianIndex{2}
 const L, R, U, D = CI(0, -1), CI(0, 1), CI(-1, 0), CI(1, 0)
+const DIRS = (L, R, U, D)
 const SLOPE = Dict('>' => R, '<' => L, '^' => U, 'v' => D)
 
-struct State
-    pos::CI
-    steps::Int
-end
-
-function paint(map)
-    for row in eachrow(map)
-        for c in row
-            print(c)
-        end
-        println()
-    end
-end
-
-function legal_next(pos, prev, q, MAP; part1=true)
-    res = CI[]
-    if part1 && haskey(SLOPE, MAP[pos])
-        next_p = pos + SLOPE[MAP[pos]]
-        next_p == prev && return res
-        next_p in q && return res
-        return [next_p]
+function neighbors(map, start; p1=true)
+    tile = map[start]
+    res = if p1 && haskey(SLOPE, tile)
+        (start + SLOPE[tile],)
     else
-        for dir in (L, R, U, D)
-            next_p = pos + dir
-            !isassigned(MAP, next_p) && continue
-            MAP[next_p] == '#' && continue
-            next_p == prev && continue
-            next_p in q && continue
-            push!(res, next_p)
+        DIRS .+ start
+    end
+    filter(x -> isassigned(map, x) && map[x] != '#', res)
+end
+
+function dfs(map, start, target, visited)
+    if start == target || !isassigned(map, start)
+        return 0
+    end
+    tile = map[start]
+    tile == '#' && return -1
+
+    nexts = neighbors(map, start)
+
+    vis = push!(copy(visited), start)
+    lens = Int[]
+    for np in nexts
+        np ∈ vis && continue
+        len = dfs(map, np, target, vis)
+        if len >= 0
+            push!(lens, len + 1)
         end
     end
-    res
+
+    isempty(lens) ? -1 : maximum(lens)
+end
+
+function make_edges(MAP)
+    # double linked list
+    # from_node -> (to_node -> distance)
+    edges = Dict{CI,Dict{CI,Int}}()
+    for pos in CartesianIndices(MAP)
+        v = MAP[pos]
+        v == '#' && continue
+        for np in neighbors(MAP, pos)
+            get!(edges, pos, Dict())[np] = 1
+            get!(edges, np, Dict())[pos] = 1
+        end
+    end
+
+    @label notdone
+    n = findfirst(e -> length(e) == 2, edges)
+    if !isnothing(n)
+        (pos1, l1), (pos2, l2) = edges[n]
+        delete!(edges[pos1], n)
+        delete!(edges[pos2], n)
+        new_len = l1 + l2
+        edges[pos1][pos2] = new_len
+        edges[pos2][pos1] = new_len
+        delete!(edges, n)
+        @goto notdone
+    end
+    edges
+end
+
+function longest(edges, start, STOP)
+    q = [(start, 0)]
+    visited = Set{CI}()
+    best = 0
+    while !isempty(q)
+        rc, d = pop!(q)
+        if d == -1
+            delete!(visited, rc)
+        elseif rc == STOP
+            best = max(best, d)
+        elseif rc ∉ visited
+            push!(visited, rc)
+            push!(q, (rc, -1))
+            for (np, l) in edges[rc]
+                push!(q, (np, d + l))
+            end
+        end
+    end
+    return best
 end
 
 function main(path)
     MAP = stack(readlines(path); dims=1)
     height = size(MAP, 1)
     START = findfirst(==('.'), MAP[begin:begin, :])
-
     stop_x = findfirst(==('.'), MAP[end, :])
     STOP = CI(height, stop_x)
 
-    path_queue = [[START]]
-    done_queue = empty(path_queue)
+    p1 = dfs(MAP, START, STOP, Set([START]))
+    println(p1)
 
-    while !isempty(path_queue)
-        i = 1
-        while i <= length(path_queue)
-            q = path_queue[i]
-            L = length(q)
-            pos = q[L]
-            prev = get(q, L - 1, CI(0, 0))
-            nexts = legal_next(pos, prev, q, MAP; part1=true)
-            if pos == STOP
-                push!(done_queue, popat!(path_queue, i))
-                break
-            end
-            if isempty(nexts)
-                deleteat!(path_queue, i)
-                break
-            end
-            primal, alts... = nexts
-            push!(q, primal)
-            for a in alts
-                copy_q = copy(q)
-                copy_q[end] = a
-                push!(path_queue, copy_q)
-            end
-            i += 1
-        end
-    end
-
-    println(maximum(length.(done_queue)) - 1)
+    edges = make_edges(MAP)
+    println(longest(edges, START, STOP))
 end
-
 
 (abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])
