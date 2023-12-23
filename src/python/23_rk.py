@@ -101,6 +101,89 @@ def check_surrounding(pos, prevpos, m):
     return l_possible_sol1, l_possible_sol2
 
 
+def conversion(c, d_graph, pos):
+    if c == "#":
+        return 0
+    elif pos in d_graph:
+        return 2
+    else:
+        return 1
+
+def plot(d_graph, m, sol2, solution):
+    from matplotlib import pyplot as plt
+    import numpy as np
+
+    num_m = [[conversion(c, d_graph, (irow, icol)) for icol, c in enumerate(row)] for irow, row in enumerate(m)]
+    #  print(num_m)
+
+    map = np.array(num_m)
+    #  print(map)
+
+    fig, ax = plt.subplots()
+    im = ax.imshow(map)
+
+    #  ax.set_xticks(np.arange(len(farmers)), labels=farmers)
+    #  ax.set_yticks(np.arange(len(vegetables)), labels=vegetables)
+
+    fig.savefig("23_full_trace.png")
+
+    import networkx as nx
+    G = None
+    G = nx.DiGraph()
+
+
+
+    for i in range(len(solution)-1):
+        start = solution[i]
+        end = solution[i+1]
+        for end2, step in d_graph[start]:
+            if end != end2: continue
+
+            G.add_edge(f"{(start[0], start[1])}", f"{(end[0], end[1])}", weight = 1, length = step, color = "tab:red")
+            break
+        pass
+
+    esolution = [(u, v) for (u, v, d) in G.edges(data=True) if d["color"] == "tab:red"]
+
+    for start, l in d_graph.items():
+        for end, step in l:
+            if (end, start) in esolution or (start, end) in esolution:
+                continue
+            G.add_edge(f"{(start[0], start[1])}", f"{(end[0], end[1])}", weight = 1, length = step, color = "k")
+
+
+    eother    = [(u, v) for (u, v, d) in G.edges(data=True) if d["color"] != "tab:red"]
+
+
+    options = {
+		#  'node_color': 'black',
+		'node_size': 1000,
+		'font_size': 7,
+        'width': 6,
+        #  'horizontalalignment' : 'left',
+        #  'verticalalignment' : '',
+        }
+
+    #  fig, ax = plt.subplots(figsize=(30, 30))
+    fig, ax = plt.subplots(figsize=(30, 30))
+    pos = nx.spectral_layout(G)
+    #  pos = nx.spring_layout(G)
+    #  pos = nx.spring_layout(G, seed = 0)
+    nx.draw_networkx_nodes(G, pos = pos, node_size = options['node_size'])
+    nx.draw_networkx_labels(G, pos = pos, font_size = options['font_size'])
+    #  colors = nx.get_edge_attributes(G,'color')
+    #  [print(i) for i in colors.values()]
+    #  nx.draw_networkx_edges(G, pos, edge_color = colors)
+    if sol2:
+        nx.draw_networkx_edges(G, pos, edgelist=eother,    edge_color = "k", arrows = True, width = 6, arrowsize = 15, arrowstyle = "-")
+    else:
+        nx.draw_networkx_edges(G, pos, edgelist=eother,    edge_color = "k", arrows = True, width = 6, arrowsize = 15)
+    nx.draw_networkx_edges(G, pos, edgelist=esolution, edge_color = "tab:red", arrows = True, width = 6, arrowsize = 15)
+    labels = nx.get_edge_attributes(G,'length')
+    nx.draw_networkx_edge_labels(G, pos = pos, edge_labels=labels, font_size=options["font_size"])
+    plt.savefig(f"23_graph_part{int(sol2) + 1}.png", dpi = 400)
+
+    pass
 
 def sol(m, sol2):
     """
@@ -149,6 +232,7 @@ def sol(m, sol2):
     
     #  print(d_graph)
     q = [([start], 0)]
+    solution = None
     max_s = 0
     while len(q):
         visited_nodes, step = q.pop()
@@ -157,6 +241,8 @@ def sol(m, sol2):
         if start == end:
             #  print(visited_nodes, step)
             max_s = max(max_s, step)
+            if max_s == step:
+                solution = visited_nodes
             continue
 
         for next, added_step in d_graph[start]:
@@ -165,6 +251,8 @@ def sol(m, sol2):
                 continue
             q.append((visited_nodes + [next], step+added_step))
 
+    if len(sys.argv) > 2:
+        plot(d_graph, m, sol2, solution)
 
     return max_s
 
