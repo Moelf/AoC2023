@@ -1,67 +1,39 @@
+using LinearAlgebra: ×
+
 struct Hail
-    pos::NTuple{3,Int}
-    vel::NTuple{3,Int}
+    pos::Vector{Int}
+    vel::Vector{Int}
 end
 
-slopey(h) = big(h.vel[2]) / h.vel[1]
-slopez(h) = big(h.vel[3]) / h.vel[1]
+slope(h, dim) = big(h.vel[dim]) / h.vel[1]
 isfuture(h, x0) = sign(x0 - h.pos[1]) == sign(h.vel[1])
 
 function intersect(h1, h2)
     x1, y1 = h1.pos
     x2, y2 = h2.pos
-    S1, S2 = slopey(h1), slopey(h2)
+    S1, S2 = slope(h1, 2), slope(h2, 2)
     x0 = (y2 - y1 - S2 * x2 + S1 * x1) / (S1 - S2)
     y0 = (x0 - x1) * S1 + y1
 
     x0, y0
 end
 
-function forecast(h, x0)
-    x, y, z = h.pos
-    Sy = slopey(h)
-    Sz = slopez(h)
-    Δy = (x0 - x) * Sy
-    Δz = (x0 - x) * Sz
-    return (x0, y + Δy, z + Δz)
-end
-
-function impl2(hails, v_extrema)
-    xlim, ylim, zlim = v_extrema
-    for xi in range(xlim...), yi in 0:100
-        v_offset = (xi, yi, 0)
-        dummy = [Hail(x.pos, x.vel .- v_offset) for x in hails]
-        h1, rest... = dummy
-        xy = intersect(h1, rest[1])
-        x0 = xy[1]
-        isinf(x0) && continue
-        if all(h -> all(intersect(h1, h) .≈ xy), rest)
-            for zi in range(zlim...)
-                v_offset = (xi, yi, zi)
-                dummy2 = [Hail(x.pos, x.vel .- v_offset) for x in hails]
-                h2, rest2... = dummy2
-                est = forecast(h2, x0)
-                if all(h -> all(forecast(h, x0) .≈ est), rest2)
-                    return sum(round.(BigInt, est))
-                end
-            end
-        end
-    end
-    error("no solution")
+function skew(x)
+    x₁, x₂, x₃ = x
+    [
+        0  -x₃  x₂
+        x₃  0  -x₁
+       -x₂  x₁  0
+    ]
 end
 
 function main(path)
-    vs = Int[]
-
     hails = map(eachline(path)) do line
         l, r = split(line, " @ ")
-        pos = Tuple(parse.(Int, split(l, ", ")))
-        vel = Tuple(parse.(Int, split(r, ", ")))
-        append!(vs, vel)
+        pos = parse.(Int, split(l, ", "))
+        vel = parse.(Int, split(r, ", "))
         Hail(pos, vel)
     end
-
-    v_extrema = extrema.(eachrow(reshape(vs, 3, :)))
 
     p1 = 0
     for i in eachindex(hails), j in i+1:lastindex(hails)
@@ -76,8 +48,21 @@ function main(path)
     end
     println(p1)
 
-    println(impl2(hails, v_extrema))
-end
+    x₁, y₁ = hails[1].pos, hails[1].vel
+    x₂, y₂ = hails[2].pos, hails[2].vel
+    x₃, y₃ = hails[3].pos, hails[3].vel
 
+    A₁ = hcat(skew(y₁ - y₂), skew(x₂ - x₁))
+    RHS₁ = x₂ × y₂ - x₁ × y₁
+
+    A₂ = hcat(skew(y₁ - y₃), skew(x₃ - x₁))
+    RHS₂ = x₃ × y₃ - x₁ × y₁
+
+    A = vcat(A₁, A₂)
+    RHS = vcat(RHS₁, RHS₂)
+
+    sol = A \ RHS
+    println(sum(round.(Int, first(sol, 3))))
+end
 
 (abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])
