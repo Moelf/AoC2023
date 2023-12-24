@@ -3,36 +3,9 @@ const L, R, U, D = CI(0, -1), CI(0, 1), CI(-1, 0), CI(1, 0)
 const DIRS = (L, R, U, D)
 const SLOPE = Dict('>' => R, '<' => L, '^' => U, 'v' => D)
 
-function neighbors(map, start; p1=true)
-    tile = map[start]
-    res = if p1 && haskey(SLOPE, tile)
-        (start + SLOPE[tile],)
-    else
-        DIRS .+ start
-    end
-    filter(x -> isassigned(map, x) && map[x] != '#', res)
-end
-
-function dfs(map, start, target, visited)
-    if start == target || !isassigned(map, start)
-        return 0
-    end
-    tile = map[start]
-    tile == '#' && return -1
-
-    nexts = neighbors(map, start)
-
-    vis = push!(copy(visited), start)
-    lens = Int[]
-    for np in nexts
-        np ∈ vis && continue
-        len = dfs(map, np, target, vis)
-        if len >= 0
-            push!(lens, len + 1)
-        end
-    end
-
-    isempty(lens) ? -1 : maximum(lens)
+function mutual!(edges, pos, dir)
+    get!(edges, pos, Dict())[pos+dir] = 1
+    get!(edges, pos - dir, Dict())[pos] = 1
 end
 
 function make_edges(MAP)
@@ -42,28 +15,37 @@ function make_edges(MAP)
     for pos in CartesianIndices(MAP)
         v = MAP[pos]
         v == '#' && continue
-        for np in neighbors(MAP, pos)
-            get!(edges, pos, Dict())[np] = 1
-            get!(edges, np, Dict())[pos] = 1
+        if haskey(SLOPE, v)
+            mutual!(edges, pos, SLOPE[v])
+        else
+            for np in pos .+ DIRS
+                if isassigned(MAP, np) && MAP[np] == '.'
+                    get!(edges, pos, Dict())[np] = 1
+                    get!(edges, np, Dict())[pos] = 1
+                end
+            end
         end
     end
 
-    @label notdone
-    n = findfirst(e -> length(e) == 2, edges)
-    if !isnothing(n)
+    # graph condense
+    ns = findall(e -> length(e) == 2, edges)
+    while !isempty(ns)
+        n = pop!(ns)
         (pos1, l1), (pos2, l2) = edges[n]
+        if !haskey(edges[pos1], n) || !haskey(edges[pos2], n)
+            continue
+        end
         delete!(edges[pos1], n)
         delete!(edges[pos2], n)
         new_len = l1 + l2
         edges[pos1][pos2] = new_len
         edges[pos2][pos1] = new_len
         delete!(edges, n)
-        @goto notdone
     end
     edges
 end
 
-function longest(edges, start, STOP)
+function dfs(edges, start, STOP)
     q = [(start, 0)]
     visited = Set{CI}()
     best = 0
@@ -86,16 +68,16 @@ end
 
 function main(path)
     MAP = stack(readlines(path); dims=1)
-    height = size(MAP, 1)
     START = findfirst(==('.'), MAP[begin:begin, :])
     stop_x = findfirst(==('.'), MAP[end, :])
-    STOP = CI(height, stop_x)
-
-    p1 = dfs(MAP, START, STOP, Set([START]))
-    println(p1)
+    STOP = CI(size(MAP, 1), stop_x)
 
     edges = make_edges(MAP)
-    println(longest(edges, START, STOP))
+    println(dfs(edges, START, STOP))
+
+    replace!(MAP, (x => '.' for x in keys(SLOPE))...)
+    edges2 = make_edges(MAP)
+    println(dfs(edges2, START, STOP))
 end
 
 (abspath(PROGRAM_FILE) == @__FILE__) && main(ARGS[1])
