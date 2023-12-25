@@ -9,6 +9,7 @@ def parse():
     l_full = []
     for line in fileinput.input(encoding="utf-8"):
         key, l = line.strip().split(":")
+        key = key.strip()
 
         if key not in l_full:
             l_full.append(key)
@@ -65,14 +66,17 @@ def sol1(m):
             return list(prev.keys())
 
 
+    ngroup0 =  1
     for j in range(1, n_node):
         # from the target
+        #  print(j)
         removed = []
         for _ in range(3):
             # compare with node 0
             path = bfs(m, 0, j)
             #  print(path)
             # remove this flow and find another flow
+            #  print(path)
             for i in range(len(path)-1):
                 m[path[i]].remove(path[i+1])
                 m[path[i+1]].remove(path[i])
@@ -82,14 +86,20 @@ def sol1(m):
 
         # do you still find the flow or not?
         path = bfs(m, 0, j)
+        #  print(path)
+
         if path[0] == j:
-            # find the path. same component, go to next j
-            # rebuild the path before going
-            for src, goal in removed:
-                m[src].add(goal)
-                m[goal].add(src)
-        else:
-            return len(path) * (n_node - len(path))
+            # find a path, still in the same subgraph
+            ngroup0 += 1
+
+        # rebuild the path before going
+        for src, goal in removed:
+            m[src].add(goal)
+            m[goal].add(src)
+
+        #  else:
+            #  return len(path) * (n_node - len(path))
+    return ngroup0 * (n_node - ngroup0)
     pass
 
 def main():
