@@ -130,8 +130,9 @@ def main():
     #  [print(i) for i in hails]
     nhails = len(hails)
 
-    for i in range(3):
-        plot(hails, i)
+    
+    #  for i in range(3):
+        #  plot(hails, i)
 
 
     print(sol1(hails))
