@@ -19,6 +19,10 @@ class matrix:
             self._nc = 0
         return self._nr, self._nc
 
+    def __len__(self):
+        self.dim()
+        return self._nr
+
     def __iter__(self):
         for x in self._l:
             yield x
@@ -35,16 +39,19 @@ class matrix:
             return self._l[tup]
 
     def __setitem__(self, tup, val):
-        if type(tup) == type((0,0)):
+        #  print("set item")
+        #  print(self._nr, self._nc, tup, val)
+        if type(tup) == type((0, 0)):
             if tup[0] >= self._nr:
                 for i in range(self._nr, tup[0]+1):
-                    self._l.append([])
-            self.dim()
+                    self._l.append([self._default] * self._nc)
             if tup[1] >= self._nc:
-                for r in range(0, self._nr):
-                    for c in range(self._nc, tup[1]+1):
+                for r in range(max(tup[0]+1, self._nr)):
+                    #  print("r", r)
+                    for c in range(len(self._l[r]), tup[1]+1):
+                        #  print(r, c)
                         self._l[r].append(self._default)
-
+            #  print(self._l)
             self._l[tup[0]][tup[1]] = val
             self.dim()
         else:
@@ -56,7 +63,8 @@ class matrix:
 
     def __str__(self):
         s = ""
-        for l in self:
+        for il, l in enumerate(self):
+            s += f"{il:<4d}"
             for e in l:
                 s += str(e)
             s += "\n"
